@@ -33,7 +33,7 @@ rpm_directories = ['AIQB','iCameraSrc','IPUFW','LibCamHal','LibIAAIQ','LibIACSS'
 def parse_cli(argv):
     parser = argparse.ArgumentParser(
         prog=argv[0],
-        description="Download xlink and hddl deb")
+        description="Download IPU RPM")
 
     parser.add_argument(
         '--username',

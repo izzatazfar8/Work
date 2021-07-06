@@ -19,6 +19,8 @@ import argparse
 import logging
 import requests
 import re
+import paramiko
+import time
 
 from lxml import html
 from tqdm import tqdm
@@ -29,11 +31,11 @@ from requests.compat import urljoin
 url = "https://ubit-artifactory-ba.intel.com/artifactory/ped-bxtn-ipu-local/"
 keyword = "ipu6_adl_dev"
 rpm_directories = ['AIQB','iCameraSrc','IPUFW','LibCamHal','LibIAAIQ','LibIACSS']
-
+sut_path = "/home/root"
 def parse_cli(argv):
     parser = argparse.ArgumentParser(
         prog=argv[0],
-        description="Download IPU RPM")
+        description="Download xlink and hddl deb")
 
     parser.add_argument(
         '--username',
@@ -47,9 +49,17 @@ def parse_cli(argv):
         default="",
         help='password for artifactory')
 
+    parser.add_argument(
+        '--sut_ip',
+        type=str,
+        default="",
+        help='SUT IP')
+    
     args = parser.parse_args(argv[1:])
 
     return args
+    
+    
 
 def create_logger(debug):
     logger = logging.getLogger(__name__)
@@ -106,21 +116,42 @@ def download_url_content(url, file_name, user, pswd):
     return(True)
 
 def download_ipu_rpms(url, args):
+    target_user = 'root'
+    target_pass = ''
+    sut = paramiko.SSHClient()
+    sut.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    sut.connect(hostname=args.sut_ip,port=22,username=target_user,password=target_pass,allow_agent=False,look_for_keys=False)
+    host,port = args.sut_ip,22
+    
+    
+
     # get latest ipu ingredieents
     tree = get_url_content(url, args.username, args.password).xpath('//a/@href')
     matching_contentname = []
     [matching_contentname.append(contentname) for contentname in tree if keyword in contentname]
     matching_contentname.sort()
     latest_ipu = matching_contentname[-1]
-
+    
     # download latest ipu rpms based on list of folder name
     for rpm_directory in rpm_directories:
         rpmname = get_url_content(url + latest_ipu + rpm_directory, args.username, args.password).xpath('//a/@href')[1]
         download_url_content(url + latest_ipu + rpm_directory + "/" + rpmname, rpmname, args.username, args.password)
+            
+        print(rpmname)
+        
+        sftp = sut.open_sftp()
+        sftp.put(rpmname , os.path.join(sut_path, rpmname))
 
+        stdin, stdout, stderr = sut.exec_command("rpm -ivh --nodeps " + rpmname)
+        time.sleep(3)
+        output = stdout.readlines()
+        print ("\nSUT output:\n")
+        print (output)        
 if __name__ == "__main__":
     args = parse_cli(sys.argv)
+    sut = parse_cli(sys.argv)
     main_logger = create_logger(False)
     download_ipu_rpms(url, args)
+    
     
 

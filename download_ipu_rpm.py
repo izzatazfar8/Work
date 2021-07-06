@@ -40,13 +40,13 @@ def parse_cli(argv):
     parser.add_argument(
         '--username',
         type=str,
-        default="izulhish",
+        default="sys_ipu",
         help='username for artifactory')
 
     parser.add_argument(
         '--password',
         type=str,
-        default="Out@ar1234",
+        default="Out@ar1245gyh",
         help='password for artifactory')
 
     parser.add_argument(

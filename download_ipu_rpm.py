@@ -46,7 +46,7 @@ def parse_cli(argv):
     parser.add_argument(
         '--password',
         type=str,
-        default="Out@ar1245gyh",
+        default="image_processing_unit@321",
         help='password for artifactory')
 
     parser.add_argument(

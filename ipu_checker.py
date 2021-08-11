@@ -1,4 +1,3 @@
-
 import os
 import argparse
 import sys
@@ -39,18 +38,16 @@ def modules_checker():
 	
  	
 def main():
-    print("----- Audio Built In driver testing -----")
+    print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])
-    usage = "python Audio_checker.py -c modules"
-    usage = "python Audio_checker.py -b 16 -s 48"
+    usage = "python ipu_checker.py -c ipu_modules_checker"
 
     parser = argparse.ArgumentParser(prog=script_name,
                                      formatter_class=argparse.RawTextHelpFormatter,
                                      description=usage)
 
-    parser.add_argument('-c', metavar='--checker', help='modules')
-    parser.add_argument('-b', metavar='--checker', help='bit_depth')
-    parser.add_argument('-s', metavar='--checker', help='sampling_rate')
+    parser.add_argument('-c', metavar='--checker', help='driver/modules checker')
+
 
     args = parser.parse_args()
 

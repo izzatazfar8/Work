@@ -1,12 +1,9 @@
-
 import os, re, sys, time, argparse, subprocess, time
 from invoke import UnexpectedExit
 import paramiko
 
-destPath = "/home/test/siv_test_collateral/siv_val-io-test-apps/audio"
-file_to_check = "/home/Audio_checker.py"
 script_name = str(sys.argv[0])
-usage = "# python /home/THM/automation_script/Audio_checker_THM.py <IP> <option>"
+usage = "# python /home/THM/automation_script/IPU_checker_THM.py <IP> <option>"
 parser = argparse.ArgumentParser(prog=script_name, description=usage)
 parser.add_argument('-sut_ip', help='SUT IP')
 parser.add_argument('-thm_ip', help='THM IP')
@@ -14,9 +11,6 @@ parser.add_argument('-thm_ip', help='THM IP')
 parser.add_argument('-op', help='Option = [playback, driver_check]')
 
 args = parser.parse_args()
-
-
-#python3 /home/siv_test_collateral/siv_val-io-test-apps/audio/new_audio_thm_checker.py -sut_ip 172.30.248.25 -op playback -drv HDA -bitdepth 32 -khz 48 -ch 2
 
 target_user = 'root'
 target_pass = ''

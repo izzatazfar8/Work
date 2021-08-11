@@ -7,8 +7,7 @@ usage = "# python /home/THM/automation_script/IPU_checker_THM.py <IP> <option>"
 parser = argparse.ArgumentParser(prog=script_name, description=usage)
 parser.add_argument('-sut_ip', help='SUT IP')
 parser.add_argument('-thm_ip', help='THM IP')
-#parser.add_argument('-op', help='Option = [modules_checker, alsa_checker, 16bits, 32bits]')
-parser.add_argument('-op', help='Option = [playback, driver_check]')
+parser.add_argument('-op', help='Option = [streaming, driver_check]')
 
 args = parser.parse_args()
 
@@ -59,13 +58,9 @@ def main():
         print (output)
         sys.exit(0)
 		
-    elif option == "playback":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/new_audio_SUT_checker.py -op " + option + " -drv " +Driver + " -b " + bitdepth + " -s " + rate + " -ch " + channel)
-        execcommand = ("python3 /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/new_audio_SUT_checker.py -op " + option + " -drv " +Driver + " -b " + bitdepth + " -s " + rate + " -ch " + channel)
-        print (execcommand)
-		
-        #stdin, stdout, stderr = sut.exec_command("python3 /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/new_audio_SUT_checker.py -op playback -drv HDA -b 32 -s 48 #-ch 2")
-		
+    
+    elif option == "ipu_modules_fw_checker":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_modules_fw_checker")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()

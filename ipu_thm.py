@@ -59,7 +59,7 @@ def main():
         sys.exit(0)
     
     elif option == "exposure":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_modules_checker")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c exposure")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -69,7 +69,7 @@ def main():
         sys.exit(0)
 		
     elif option == "digital_gain":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_modules_checker")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -79,7 +79,7 @@ def main():
         sys.exit(0)
         
     elif option == "analog_gain":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_modules_checker")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()

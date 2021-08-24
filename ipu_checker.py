@@ -37,7 +37,7 @@ def modules_checker():
 	 		 
 def exposure():
     print("----- Exposure Checking -----")
-    os.system("v4l2-ctl --all -d /dev/v4l-subdev12 > /home/root/exposure_check.log")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/exposure_check.log")
 
     #verdict = false
     with open('/home/root/exposure_check.log') as f:
@@ -48,7 +48,7 @@ def exposure():
 
 def digital_gain():
     print("----- Digital Value Gain Checking -----")
-    os.system("v4l2-ctl --all -d /dev/v4l-subdev12 > /home/root/digitalgain_check.log")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/digitalgain_check.log")
 
     #verdict = false
     with open('/home/root/digitalgain_check.log') as f:
@@ -59,7 +59,7 @@ def digital_gain():
           
 def analog_gain():
     print("----- Analog Gain Value Checking -----")
-    os.system("v4l2-ctl --all -d /dev/v4l-subdev12 > /home/root/analoggain_check.log")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/analoggain_check.log")
 
     #verdict = false
     with open('/home/root/analoggain_check.log') as f:

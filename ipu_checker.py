@@ -79,6 +79,28 @@ def check_binary():
         else:
           print ("Binary Loaded FAILED")
           
+def kernel_conf():
+    print("----- Kernel Configuration Checking -----")
+    os.system("zcat /proc/config.gz | grep CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING > /home/root/kernel_conf.log")
+
+    #verdict = false
+    with open('/home/root/kernel_conf.log') as f:
+        if '# CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING is not set' in f.read():
+          print ("Kernel Configuration PASS")
+        else:
+          print ("Kernel Configuration FAILED")
+          
+def binary_conf():
+    print("----- Binary Configuration Checking -----")
+    os.system("zcat /proc/config.gz | grep CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING > /home/root/binary_conf.log")
+
+    #verdict = false
+    with open('/home/root/binary_conf.log') as f:
+        if '# CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING is not set' in f.read():
+          print ("Binary Configuration PASS")
+        else:
+          print ("Binary Configuration FAILED")
+          
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])
@@ -107,6 +129,10 @@ def main():
         analog_gain()
     elif args.c == "check_binary":
         check_binary()
+    elif args.c == "binary_conf":
+        binary_conf()
+    elif args.c == "kernel_conf":
+        kernel_conf()    
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

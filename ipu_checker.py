@@ -41,7 +41,7 @@ def exposure():
 
     #verdict = false
     with open('/home/root/exposure_check.log') as f:
-        if 'exposure 0x00980911 (int)    : min=0 max=2355 step=1 default=2355 value=2355' in f.read():
+        if 'exposure 0x00980911 (int)    : min=0 max=2355 step=2 default=2355 value=2355' in f.read():
           print ("Exposure PASS")
         else:
           print ("Exposure FAILED")	
@@ -52,7 +52,7 @@ def digital_gain():
 
     #verdict = false
     with open('/home/root/digitalgain_check.log') as f:
-        if 'digital_gain 0x009f0905 (int)    : min=0 max=2047 step=1 default=128 value=128' in f.read():
+        if 'digital_gain 0x009f0905 (int)    : min=0 max=2047 step=2 default=128 value=128' in f.read():
           print ("Digital Gain PASS")
         else:
           print ("Digital Gain FAILED")
@@ -63,7 +63,7 @@ def analog_gain():
 
     #verdict = false
     with open('/home/root/analoggain_check.log') as f:
-        if 'analogue_gain 0x009e0903 (int)    : min=0 max=127 step=1 default=14 value=14' in f.read():
+        if 'analogue_gain 0x009e0903 (int)    : min=0 max=127 step=2 default=14 value=14' in f.read():
           print ("Analog Gain PASS")
         else:
           print ("Analog Gain FAILED")
@@ -74,7 +74,7 @@ def check_binary():
 
     #verdict = false
     with open('/home/root/check_binary.log') as f:
-        if 'intel-ipu6 intel-ipu: Direct firmware load for ipu6v1_spdata.bin failed with error -2' in f.read():
+        if 'cpd file name: intel/ipu6ep_fw.bin' in f.read():
           print ("Binary Loaded PASS")
         else:
           print ("Binary Loaded FAILED")

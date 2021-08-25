@@ -96,7 +96,7 @@ def dynamic_conf():
 
     #verdict = false
     with open('/home/root/dynamic_conf.log') as f:
-        if '# CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING is not set' in f.read():
+        if 'CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING=y' in f.read():
           print ("Dynamic Configuration PASS")
         else:
           print ("Dynamic Configuration FAILED")

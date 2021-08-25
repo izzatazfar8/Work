@@ -90,16 +90,16 @@ def kernel_conf():
         else:
           print ("Kernel Configuration FAILED")
           
-def binary_conf():
-    print("----- Binary Configuration Checking -----")
-    os.system("zcat /proc/config.gz | grep CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING > /home/root/binary_conf.log")
+def dynamic_conf():
+    print("----- Dynamic Configuration Checking -----")
+    os.system("zcat /proc/config.gz | grep CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING > /home/root/dynamic_conf.log")
 
     #verdict = false
-    with open('/home/root/binary_conf.log') as f:
+    with open('/home/root/dynamic_conf.log') as f:
         if '# CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING is not set' in f.read():
-          print ("Binary Configuration PASS")
+          print ("Dynamic Configuration PASS")
         else:
-          print ("Binary Configuration FAILED")
+          print ("Dynamic Configuration FAILED")
           
 def main():
     print("----- IPU Module/Firmware Checking -----")
@@ -129,8 +129,8 @@ def main():
         analog_gain()
     elif args.c == "check_binary":
         check_binary()
-    elif args.c == "binary_conf":
-        binary_conf()
+    elif args.c == "dynamic_conf":
+        dynamic_conf()
     elif args.c == "kernel_conf":
         kernel_conf()    
     else:

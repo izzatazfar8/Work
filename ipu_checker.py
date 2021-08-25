@@ -68,6 +68,16 @@ def analog_gain():
         else:
           print ("Analog Gain FAILED")
           
+def check_binary():
+    print("----- Binary loaded Checking -----")
+    os.system("dmesg | grep ipu > /home/root/check_binary.log")
+
+    #verdict = false
+    with open('/home/root/check_binary.log') as f:
+        if 'intel-ipu6 intel-ipu: Direct firmware load for ipu6v1_spdata.bin failed with error -2' in f.read():
+          print ("Binary Loaded PASS")
+        else:
+          print ("Binary Loaded FAILED")
           
 def main():
     print("----- IPU Module/Firmware Checking -----")
@@ -95,7 +105,8 @@ def main():
         digital_gain()
     elif args.c == "analog_gain":
         analog_gain()
-   
+    elif args.c == "check_binary":
+        check_binary()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

@@ -87,7 +87,17 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
-        
+    
+    elif option == "check_binary":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c check_binary")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)    
+    
     elif option == "ipu_modules_fw_checker":
         stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_modules_fw_checker")
         print ("\nSUT executing " + option + " command...\n")

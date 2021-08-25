@@ -30,7 +30,7 @@ from requests.compat import urljoin
 
 url = "https://ubit-artifactory-ba.intel.com/artifactory/ped-bxtn-ipu-local/"
 keyword = "ipu6_adl_dev"
-rpm_directories = ['AIQB','iCameraSrc','IPUFW','LibCamHal','LibIAAIQ','LibIACSS']
+rpm_directories = ['AIQB','iCameraSrc','IPUFW','LibCamHal','LibIAAIQ','LibIACSS','ADL-P IPU6 SDK User Guide']
 sut_path = "/home/root"
 def parse_cli(argv):
     parser = argparse.ArgumentParser(

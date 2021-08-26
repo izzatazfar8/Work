@@ -111,16 +111,16 @@ def single_fps():
           print ("Single FPS PASS")
         else:
           print ("Single FPS FAILED")
-def single_fps():
+def dual_fps():
     print("----- Single Camera FPS Checking -----")
-    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/single_fps.log")
+    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink icamerasrc device-name=ar0234-2 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/dual_fps.log")
 
     #verdict = false
-    with open('/home/root/single_fps.log') as f:
+    with open('/home/root/dual_fps.log') as f:
         if 'Average fps is:29' in f.read():
-          print ("Single FPS PASS")
+          print ("Dual FPS PASS")
         else:
-          print ("Single FPS FAILED")
+          print ("Dual FPS FAILED")
 def Pdata_dynamic_doc():
     print("----- Pdata dynamic doc Checking -----")
     #os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/single_fps.log")

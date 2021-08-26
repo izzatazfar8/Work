@@ -111,17 +111,46 @@ def single_fps():
           print ("Single FPS PASS")
         else:
           print ("Single FPS FAILED")
-          
-def dual_fps():
-    print("----- Dual Camera FPS Checking -----")
-    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink icamerasrc device-name=ar0234-2 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/dual_fps.log")
+def single_fps():
+    print("----- Single Camera FPS Checking -----")
+    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/single_fps.log")
 
     #verdict = false
-    with open('/home/root/dual_fps.log') as f:
+    with open('/home/root/single_fps.log') as f:
         if 'Average fps is:29' in f.read():
-          print ("Dual FPS PASS")
+          print ("Single FPS PASS")
         else:
-          print ("Dual FPS FAILED")
+          print ("Single FPS FAILED")
+def Pdata_dynamic_doc():
+    print("----- Pdata dynamic doc Checking -----")
+    #os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/single_fps.log")
+
+    #verdict = false
+    with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
+        if 'User also can get sensor platform data binary file for dynamic change sensor’s platform data.' in f.read():
+          print ("Pdata dynamic doc Checking PASS")
+        else:
+          print ("Pdata dynamic doc Checking FAILED")
+def Pdata_kernel_doc():
+    print("----- Pdata Kernel Documentation Checking -----")
+    #os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/single_fps.log")
+
+    #verdict = false
+    with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
+        if '2.4	Dynamic change sensor platform data' in f.read():
+          print ("Pdata Kernel Documentation PASS")
+        else:
+          print ("Pdata Kernel Documentation FAILED")
+def sensor_conf_doc():
+    print("----- Sensor Configuration Document Checking -----")
+    #os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink icamerasrc device-name=ar0234-2 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/dual_fps.log")
+
+    #verdict = false
+    with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
+        if '3	Sensor configure tool' in f.read():
+          print ("Sensor Configuration Document PASS")
+        else:
+          print ("Sensor Configuration Document FAILED")
           
 def main():
     print("----- IPU Module/Firmware Checking -----")
@@ -159,7 +188,12 @@ def main():
         single_fps()
     elif args.c == "dual_fps":
         dual_fps()    
-        
+    elif args.c == "Pdata_dynamic_doc":
+        Pdata_dynamic_doc()
+    elif args.c == "Pdata_kernel_doc":
+        Pdata_kernel_doc()
+    elif args.c == "sensor_conf_doc":
+        sensor_conf_doc()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

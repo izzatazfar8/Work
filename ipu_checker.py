@@ -100,7 +100,32 @@ def dynamic_conf():
           print ("Dynamic Configuration PASS")
         else:
           print ("Dynamic Configuration FAILED")
+
+def single_fps():
+    print("----- Single Camera FPS Checking -----")
+    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/single_fps.log")
+
+    #verdict = false
+    with open('/home/root/single_fps.log') as f:
+        for line in f.readlines():
+            if 'Average fps is' in line:
+                print(line)
+        
+        if line == 29
+          print ("Single FPS PASS")
+        else:
+          print ("Single FPS FAILED")
           
+def dual_fps():
+    print("----- Dual Camera FPS Checking -----")
+    os.system("zcat /proc/config.gz | grep CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING > /home/root/dynamic_conf.log")
+
+    #verdict = false
+    with open('/home/root/dynamic_conf.log') as f:
+        if 'CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING=y' in f.read():
+          print ("Dynamic Configuration PASS")
+        else:
+          print ("Dynamic Configuration FAILED")
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])
@@ -132,7 +157,12 @@ def main():
     elif args.c == "dynamic_conf":
         dynamic_conf()
     elif args.c == "kernel_conf":
-        kernel_conf()    
+        kernel_conf()   
+    elif args.c == "single_fps":
+        single_fps()
+    elif args.c == "dual_fps":
+        dual_fps()    
+        
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

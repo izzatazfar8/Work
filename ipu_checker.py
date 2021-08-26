@@ -107,25 +107,22 @@ def single_fps():
 
     #verdict = false
     with open('/home/root/single_fps.log') as f:
-        for line in f.readlines():
-            if 'Average fps is' in line:
-                print(line)
-        
-        if line == 29
+        if 'Average fps is:29' in f.read():
           print ("Single FPS PASS")
         else:
           print ("Single FPS FAILED")
           
 def dual_fps():
     print("----- Dual Camera FPS Checking -----")
-    os.system("zcat /proc/config.gz | grep CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING > /home/root/dynamic_conf.log")
+    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink icamerasrc device-name=ar0234-2 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/dual_fps.log")
 
     #verdict = false
-    with open('/home/root/dynamic_conf.log') as f:
-        if 'CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING=y' in f.read():
-          print ("Dynamic Configuration PASS")
+    with open('/home/root/dual_fps.log') as f:
+        if 'Average fps is:29' in f.read():
+          print ("Dual FPS PASS")
         else:
-          print ("Dynamic Configuration FAILED")
+          print ("Dual FPS FAILED")
+          
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])

@@ -146,11 +146,13 @@ def sensor_conf_doc():
     #os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink icamerasrc device-name=ar0234-2 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/dual_fps.log")
 
     #verdict = false
-    with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
-        if '3	Sensor configure tool' in f.read():
-          print ("Sensor Configuration Document PASS")
-        else:
-          print ("Sensor Configuration Document FAILED")
+    #with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
+    if os.path.isfile("/home/root/ADL-P IPU6 SDK User Guide.docx") == 0:
+        print ("Sensor Configuration Document PASS")
+    else
+        print ("Sensor Configuration Document FAILED")
+        sys.exit(0)
+
           
 def main():
     print("----- IPU Module/Firmware Checking -----")

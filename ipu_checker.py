@@ -45,7 +45,26 @@ def exposure():
           print ("Exposure PASS")
         else:
           print ("Exposure FAILED")	
+def exposure_min_0():
+    print("----- Exposure Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/exposure_check.log")
 
+    #verdict = false
+    with open('/home/root/exposure_check.log') as f:
+        if 'exposure 0x00980911 (int)    : min=0' in f.read():
+          print ("Exposure PASS")
+        else:
+          print ("Exposure FAILED")
+def exposure_max_2355():
+    print("----- Exposure Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/exposure_check.log")
+
+    #verdict = false
+    with open('/home/root/exposure_check.log') as f:
+        if 'exposure 0x00980911 (int)    : min=0 max=2355' in f.read():
+          print ("Exposure PASS")
+        else:
+          print ("Exposure FAILED")	
 def digital_gain():
     print("----- Digital Value Gain Checking -----")
     os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/digitalgain_check.log")

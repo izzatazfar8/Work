@@ -65,6 +65,28 @@ def exposure_max_2355():
           print ("Exposure PASS")
         else:
           print ("Exposure FAILED")	
+
+def exposure_def_2355():
+    print("----- Exposure Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/exposure_check.log")
+
+    #verdict = false
+    with open('/home/root/exposure_check.log') as f:
+        if 'exposure 0x00980911 (int)    : min=0 max=2355 step=2 default=2355' in f.read():
+          print ("Exposure PASS")
+        else:
+          print ("Exposure FAILED")	
+          
+def exposure_val_2355():
+    print("----- Exposure Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/exposure_check.log")
+
+    #verdict = false
+    with open('/home/root/exposure_check.log') as f:
+        if 'exposure 0x00980911 (int)    : min=0 max=2355 step=2 default=2355 value=2355' in f.read():
+          print ("Exposure PASS")
+        else:
+          print ("Exposure FAILED")	
 def digital_gain():
     print("----- Digital Value Gain Checking -----")
     os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/digitalgain_check.log")
@@ -213,6 +235,16 @@ def main():
         Pdata_dynamic_doc()
     elif args.c == "Pdata_kernel_doc":
         Pdata_kernel_doc()
+    elif args.c == "sensor_conf_doc":
+        sensor_conf_doc()
+    elif args.c == "exposure_min_0":
+        exposure_min_0()
+    elif args.c == "exposure_max_2355":
+        exposure_max_2355()    
+    elif args.c == "exposure_def_2355":
+        exposure_def_2355()
+    elif args.c == "exposure_val_2355":
+        exposure_val_2355()
     elif args.c == "sensor_conf_doc":
         sensor_conf_doc()
     else:

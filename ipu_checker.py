@@ -97,8 +97,94 @@ def digital_gain():
           print ("Digital Gain PASS")
         else:
           print ("Digital Gain FAILED")
+def digital_gain_min_0():
+    print("----- Digital Value Gain Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/digitalgain_check.log")
+
+    #verdict = false
+    with open('/home/root/digitalgain_check.log') as f:
+        if 'digital_gain 0x009f0905 (int)    : min=0' in f.read():
+          print ("Digital Gain PASS")
+        else:
+          print ("Digital Gain FAILED") 
           
+def digital_gain_max_2047():
+    print("----- Digital Value Gain Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/digitalgain_check.log")
+
+    #verdict = false
+    with open('/home/root/digitalgain_check.log') as f:
+        if 'digital_gain 0x009f0905 (int)    : min=0 max=2047' in f.read():
+          print ("Digital Gain PASS")
+        else:
+          print ("Digital Gain FAILED")
+          
+def digital_gain_def_128():
+    print("----- Digital Value Gain Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/digitalgain_check.log")
+
+    #verdict = false
+    with open('/home/root/digitalgain_check.log') as f:
+        if 'digital_gain 0x009f0905 (int)    : min=0 max=2047 step=2 default=128' in f.read():
+          print ("Digital Gain PASS")
+        else:
+          print ("Digital Gain FAILED")
+          
+def digital_gain_val_128():
+    print("----- Digital Value Gain Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/digitalgain_check.log")
+
+    #verdict = false
+    with open('/home/root/digitalgain_check.log') as f:
+        if 'digital_gain 0x009f0905 (int)    : min=0 max=2047 step=2 default=128 value=128' in f.read():
+          print ("Digital Gain PASS")
+        else:
+          print ("Digital Gain FAILED")
 def analog_gain():
+    print("----- Analog Gain Value Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/analoggain_check.log")
+
+    #verdict = false
+    with open('/home/root/analoggain_check.log') as f:
+        if 'analogue_gain 0x009e0903 (int)    : min=0 max=127 step=2 default=14 value=14' in f.read():
+          print ("Analog Gain PASS")
+        else:
+          print ("Analog Gain FAILED")
+          
+def analog_gain_min_0():
+    print("----- Analog Gain Value Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/analoggain_check.log")
+
+    #verdict = false
+    with open('/home/root/analoggain_check.log') as f:
+        if 'analogue_gain 0x009e0903 (int)    : min=0' in f.read():
+          print ("Analog Gain PASS")
+        else:
+          print ("Analog Gain FAILED")
+          
+def analog_gain_max_127():
+    print("----- Analog Gain Value Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/analoggain_check.log")
+
+    #verdict = false
+    with open('/home/root/analoggain_check.log') as f:
+        if 'analogue_gain 0x009e0903 (int)    : min=0 max=127' in f.read():
+          print ("Analog Gain PASS")
+        else:
+          print ("Analog Gain FAILED")
+          
+def analog_gain_def_14():
+    print("----- Analog Gain Value Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/analoggain_check.log")
+
+    #verdict = false
+    with open('/home/root/analoggain_check.log') as f:
+        if 'analogue_gain 0x009e0903 (int)    : min=0 max=127 step=2 default=14' in f.read():
+          print ("Analog Gain PASS")
+        else:
+          print ("Analog Gain FAILED")
+          
+def analog_gain_val_14():
     print("----- Analog Gain Value Checking -----")
     os.system("v4l2-ctl --all -d /dev/v4l-subdev5 > /home/root/analoggain_check.log")
 
@@ -245,8 +331,22 @@ def main():
         exposure_def_2355()
     elif args.c == "exposure_val_2355":
         exposure_val_2355()
-    elif args.c == "sensor_conf_doc":
-        sensor_conf_doc()
+    elif args.c == "digital_gain_min_0":
+        digital_gain_min_0()
+    elif args.c == "digital_gain_max_2047":
+        digital_gain_max_2047()    
+    elif args.c == "digital_gain_def_128":
+        digital_gain_def_128()
+    elif args.c == "digital_gain_val_128":
+        digital_gain_val_128()
+    elif args.c == "analog_gain_min_0":
+        analog_gain_min_0()
+    elif args.c == "analog_gain_max_127":
+        analog_gain_max_127()    
+    elif args.c == "analog_gain_def_14":
+        analog_gain_def_14()
+    elif args.c == "analog_gain_val_14":
+        analog_gain_val_14()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

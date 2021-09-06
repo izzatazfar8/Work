@@ -164,7 +164,7 @@ def main():
         print (output)
         sys.exit(0)
         
-        elif option == "exposure_min_0":
+    elif option == "exposure_min_0":
         stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c exposure_min_0")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
@@ -201,8 +201,28 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
-    elif option == "sensor_conf_doc":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c sensor_conf_doc")
+        
+    elif option == "digital_gain_min_0":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_min_0")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)    
+        
+    elif option == "digital_gain_max_2047":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_max_2047")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)  
+    elif option == "digital_gain_def_128":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_def_128")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -210,6 +230,54 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
+    elif option == "digital_gain_val_128":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_val_128")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)
+        
+    elif option == "analog_gain_min_0":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain_min_0")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)    
+        
+    elif option == "analog_gain_max_127":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain_max_127")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)  
+    elif option == "analog_gain_def_14":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain_def_14")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)
+    elif option == "analog_gain_val_14":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain_val_14")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)
+    
     elif option == "ipu_modules_fw_checker":
         stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_modules_fw_checker")
         print ("\nSUT executing " + option + " command...\n")

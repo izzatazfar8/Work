@@ -279,8 +279,109 @@ def sensor_conf_doc():
     else
         print ("Sensor Configuration Document FAILED")
         sys.exit(0)
+def psys_conf_doc():
+    print("----- Psys USB Document Checking -----")
+    #os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink icamerasrc device-name=ar0234-2 num-buffers=500 printfps=true ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! glimagesink > /home/root/dual_fps.log")
 
-          
+    #verdict = false
+    #with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
+    if os.path.isfile("/home/root/ADL-P IPU6 SDK User Guide.docx") == 0:
+        print ("Psys USB Document PASS")
+    else
+        print ("Psys USB Document FAILED")
+        sys.exit(0)
+def aptina1():
+    print("----- aptina1 Checking -----")
+    os.system("lsusb > /home/root/aptina1.log")
+
+    #verdict = false
+    with open('/home/root/aptina1.log') as f:
+        if 'Bus 004 Device 006: ID 20fb:100e APTINA DEMO3' in f.read():
+          print ("aptina1 PASS")
+        else:
+          print ("aptina1 FAILED")
+def aptina2():
+    print("----- aptina2 Checking -----")
+    os.system("lsusb > /home/root/aptina2.log")
+
+    #verdict = false
+    with open('/home/root/aptina2.log') as f:
+        if 'Bus 004 Device 005: ID 20fb:100e APTINA DEMO3' in f.read():
+          print ("aptina2 PASS")
+        else:
+          print ("aptina2 FAILED")
+def usb_app_exec():
+    print("----- usb_app_exec Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 12  > /home/root/usb_app_exec.log")
+
+    #verdict = false
+    with open('/home/root/usb_app_exec.log') as f:
+        if '[DBG]: Camera#2: Output frames#4 buffer dequeued.' in f.read():
+          print ("usb_app_exec PASS")
+        else:
+          print ("usb_app_exec FAILED")  
+def cam1_nv12():
+    print("----- cam1_nv12 Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 1  > /home/root/cam1_nv12.log")
+
+    #verdict = false
+    with open('/home/root/cam1_nv12.log') as f:
+        if '[DBG]: fileName ./cam1_stream0_frame0000_1280x960.NV12' in f.read():
+          print ("cam1_nv12 PASS")
+        else:
+          print ("cam1_nv12 FAILED")
+def cam2_nv12():
+    print("----- cam2_nv12 Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/cam2_nv12.log")
+
+    #verdict = false
+    with open('/home/root/cam2_nv12.log') as f:
+        if '[DBG]: fileName ./cam2_stream0_frame0000_1280x960.NV12' in f.read():
+          print ("cam2_nv12 PASS")
+        else:
+          print ("cam2_nv12 FAILED")
+def dual_nv12():
+    print("----- dual_nv12 Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 12  > /home/root/dual_nv12.log")
+
+    #verdict = false
+    with open('/home/root/dual_nv12.log') as f:
+        if '[DBG]: fileName ./cam1_stream0_frame0000_1280x960.NV12 [DBG]: fileName ./cam2_stream0_frame0000_1280x960.NV12' in f.read():
+          print ("dual_nv12 PASS")
+        else:
+          print ("dual_nv12 FAILED")  
+def usb1_active():
+    print("----- usb1_active Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 1  > /home/root/usb1_active.log")
+
+    #verdict = false
+    with open('/home/root/usb1_active.log') as f:
+        if '[INFO]: Camera#1: USB sensor input mode activated' in f.read():
+          print ("usb1_active PASS")
+        else:
+          print ("usb1_active FAILED")
+def usb2_active():
+    print("----- usb2_active Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/usb2_active.log")
+
+    #verdict = false
+    with open('/home/root/usb2_active.log') as f:
+        if '[INFO]: Camera#2: USB sensor input mode activated' in f.read():
+          print ("usb2_active PASS")
+        else:
+          print ("usb2_active FAILED")  
+def lib_check():
+    print("----- lib_check Checking -----")
+    if os.path.isfile("/home/root/usb_camera_test_tool/lib") == 0:
+          print ("lib_check PASS")
+        else:
+          print ("lib_check FAILED")
+def inc_check():
+    print("----- inc_check Checking -----")
+    if os.path.isfile("/home/root/usb_camera_test_tool/include") == 0:
+          print ("inc_check PASS")
+        else:
+          print ("inc_check FAILED")    
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])
@@ -323,6 +424,8 @@ def main():
         Pdata_kernel_doc()
     elif args.c == "sensor_conf_doc":
         sensor_conf_doc()
+    elif args.c == "psys_conf_doc":
+        psys_conf_doc()    
     elif args.c == "exposure_min_0":
         exposure_min_0()
     elif args.c == "exposure_max_2355":
@@ -347,6 +450,26 @@ def main():
         analog_gain_def_14()
     elif args.c == "analog_gain_val_14":
         analog_gain_val_14()
+    elif args.c == "aptina1":
+        aptina1()
+    elif args.c == "aptina2":
+        aptina2()
+    elif args.c == "usb_app_exec":
+        usb_app_exec()
+    elif args.c == "cam1_nv12":
+        cam1_nv12()
+    elif args.c == "cam2_nv12":
+        cam2_nv12()
+    elif args.c == "dual_nv12":
+        dual_nv12()
+    elif args.c == "usb1_active":
+        usb1_active()
+    elif args.c == "usb2_active":
+        usb2_active()
+    elif args.c == "lib_check":
+        lib_check()
+    elif args.c == "inc_check":
+        inc_check()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

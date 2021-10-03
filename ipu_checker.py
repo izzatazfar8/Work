@@ -381,7 +381,28 @@ def inc_check():
     if os.path.isfile("/home/root/usb_camera_test_tool/include") == 0:
           print ("inc_check PASS")
         else:
-          print ("inc_check FAILED")    
+          print ("inc_check FAILED")  
+def suffix_a():
+    print("----- suffix_a Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/suffix_a.log")
+    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/suffix_a.log")
+
+    #verdict = false
+    with open('/home/root/suffix_a.log') as f:
+        if '[DBG]: fileName ./cam2_stream0_frame0000_1280x960.NV12' in f.read():
+          print ("suffix_a PASS")
+        else:
+          print ("suffix_a FAILED")
+def suffix_a():
+    print("----- suffix_a Checking -----")
+    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/suffix_a.log")
+
+    #verdict = false
+    with open('/home/root/suffix_a.log') as f:
+        if '[DBG]: fileName ./cam2_stream0_frame0000_1280x960.NV12' in f.read():
+          print ("suffix_a PASS")
+        else:
+          print ("suffix_a FAILED")  
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])
@@ -470,6 +491,22 @@ def main():
         lib_check()
     elif args.c == "inc_check":
         inc_check()
+    elif args.c == "suffix_a":
+        suffix_a()
+    elif args.c == "suffix_b":
+        suffix_b()
+    elif args.c == "slave_a":
+        slave_a()
+    elif args.c == "slave_b":
+        slave_b()
+    elif args.c == "lane_a":
+        lane_a()
+    elif args.c == "lane_b":
+        lane_b()
+    elif args.c == "port_a":
+        port_a()
+    elif args.c == "port_b":
+        port_b()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

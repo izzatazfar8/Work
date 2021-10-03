@@ -384,25 +384,92 @@ def inc_check():
           print ("inc_check FAILED")  
 def suffix_a():
     print("----- suffix_a Checking -----")
-    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/suffix_a.log")
-    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/suffix_a.log")
+    os.system("cd /home/root/suffix_a_neg/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/suffix_a.log")
 
     #verdict = false
     with open('/home/root/suffix_a.log') as f:
-        if '[DBG]: fileName ./cam2_stream0_frame0000_1280x960.NV12' in f.read():
+        if 'Error: char format requires a bytes object of length 1' in f.read():
           print ("suffix_a PASS")
         else:
           print ("suffix_a FAILED")
-def suffix_a():
-    print("----- suffix_a Checking -----")
-    os.system("./usb_camera_test -p 3 -f 5 -c 2  > /home/root/suffix_a.log")
+def suffix_b():
+    print("----- suffix_b Checking -----")
+    os.system("cd /home/root/suffix_b_neg/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/suffix_b.log")
 
     #verdict = false
-    with open('/home/root/suffix_a.log') as f:
-        if '[DBG]: fileName ./cam2_stream0_frame0000_1280x960.NV12' in f.read():
-          print ("suffix_a PASS")
+    with open('/home/root/suffix_b.log') as f:
+        if 'Error: char format requires a bytes object of length 1' in f.read():
+          print ("suffix_b PASS")
         else:
-          print ("suffix_a FAILED")  
+          print ("suffix_b FAILED") 
+def slave_a():
+    print("----- slave_a Checking -----")
+    os.system("cd /home/root/slave_add_a_neg/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/slave_a.log")
+
+    #verdict = false
+    with open('/home/root/slave_a.log') as f:
+        if 'Error: invalid literal for int() with base 16: '10000x1111'' in f.read():
+          print ("slave_a PASS")
+        else:
+          print ("slave_a FAILED") 
+def slave_b():
+    print("----- slave_b Checking -----")
+    os.system("cd /home/root/slave_add_b_neg/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/slave_b.log")
+
+    #verdict = false
+    with open('/home/root/slave_b.log') as f:
+        if 'Error: invalid literal for int() with base 16: '10000x1111'' in f.read():
+          print ("slave_b PASS")
+        else:
+          print ("slave_b FAILED")
+def lane_a():
+    print("----- lane_a Checking -----")
+    os.system("cd /home/root/lane_a/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/lane_a.log")
+
+    #verdict = false
+    with open('/home/root/lane_a.log') as f:
+        if 'Error: invalid literal for int() with base 10: '@@'' in f.read():
+          print ("lane_a PASS")
+        else:
+          print ("lane_a FAILED")
+def lane_b():
+    print("----- lane_b Checking -----")
+    os.system("cd /home/root/lane_b/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/lane_b.log")
+
+    #verdict = false
+    with open('/home/root/lane_b.log') as f:
+        if 'Error: invalid literal for int() with base 10: '@@'' in f.read():
+          print ("lane_b PASS")
+        else:
+          print ("lane_b FAILED")
+def port_a():
+    print("----- port_a Checking -----")
+    os.system("cd /home/root/port_a/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/port_a.log")
+
+    #verdict = false
+    with open('/home/root/port_a.log') as f:
+        if 'Error: invalid literal for int() with base 10: 'a'' in f.read():
+          print ("port_a PASS")
+        else:
+          print ("port_a FAILED")
+def port_b():
+    print("----- port_b Checking -----")
+    os.system("cd /home/root/port_b/")
+    os.system("python3 sensor_pdata.py adl  > /home/root/port_b.log")
+
+    #verdict = false
+    with open('/home/root/port_b.log') as f:
+        if 'Error: invalid literal for int() with base 10: 'b'' in f.read():
+          print ("port_b PASS")
+        else:
+          print ("port_b FAILED")
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])

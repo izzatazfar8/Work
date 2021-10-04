@@ -440,8 +440,8 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
-    elif option == "suffix_a":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c suffix_a")
+    elif option == "build2_kernel":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_kernel")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -449,8 +449,8 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
-    elif option == "suffix_a":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c suffix_a")
+    elif option == "build2_fw_bin":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_fw_bin")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -458,8 +458,17 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
-    elif option == "suffix_a":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c suffix_a")
+    elif option == "build2_config":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_config")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)
+    elif option == "build2_0x10_pipe":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_0x10_pipe")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()

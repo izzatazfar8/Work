@@ -470,6 +470,46 @@ def port_b():
           print ("port_b PASS")
         else:
           print ("port_b FAILED")
+def build2_kernel():
+    print("----- build2_kernel Checking -----")
+    os.system("dmesg | grep ipu  > /home/root/build2_kernel.log")
+
+    #verdict = false
+    with open('/home/root/build2_kernel.log') as f:
+        if 'cpd file name: intel/ipu6ep_fw.bin' in f.read():
+          print ("build2_kernel PASS")
+        else:
+          print ("build2_kernel FAILED")
+def  build2_fw_bin():
+    print("-----  build2_fw_bin Checking -----")
+    os.system("dmesg | grep ipu  > /home/root/ build2_fw_bin.log")
+
+    #verdict = false
+    with open('/home/root/build2_fw_bin.log') as f:
+        if 'cpd file name: intel/ipu6ep_fw.bin' in f.read():
+          print (" build2_fw_bin PASS")
+        else:
+          print (" build2_fw_bin FAILED")
+def build2_config():
+    print("----- build2_config Checking -----")
+    os.system("zcat /proc/config.gz | grep CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING  > /home/root/build2_config.log")
+
+    #verdict = false
+    with open('/home/root/build2_config.log') as f:
+        if 'CONFIG_VIDEO_INTEL_IPU_PDATA_DYNAMIC_LOADING=y' in f.read():
+          print ("build2_config PASS")
+        else:
+          print ("build2_config FAILED")
+def build2_0x10_pipe():
+    print("----- build2_0x10_pipe Checking -----")
+    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=100 ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! xvimagesink icamerasrc device-name=ar0234-2 num-buffers=100 ! video/x-raw,format=NV12,width=1280,height=960 ! videoconvert ! xvimagesink  > /home/root/build2_0x10_pipe.log")
+
+    #verdict = false
+    with open('/home/root/build2_0x10_pipe.log') as f:
+        if 'Registering meta implementation 'GstCamerasrcMeta' without init function' in f.read():
+          print ("build2_0x10_pipe PASS")
+        else:
+          print ("build2_0x10_pipe FAILED")
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])
@@ -574,6 +614,14 @@ def main():
         port_a()
     elif args.c == "port_b":
         port_b()
+    elif args.c == "build2_kernel":
+        build2_kernel()
+    elif args.c == "build2_fw_bin":
+        build2_fw_bin()
+    elif args.c == "build2_config":
+        build2_config()
+    elif args.c == "build2_0x10_pipe":
+        build2_0x10_pipe()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

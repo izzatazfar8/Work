@@ -254,7 +254,7 @@ def Pdata_dynamic_doc():
 
     #verdict = false
     with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
-        if 'User also can get sensor platform data binary file for dynamic change sensor’s platform data.' in f.read():
+        if 'User also can get sensor platform data binary file for dynamic change sensorâ€™s platform data.' in f.read():
           print ("Pdata dynamic doc Checking PASS")
         else:
           print ("Pdata dynamic doc Checking FAILED")
@@ -275,8 +275,8 @@ def sensor_conf_doc():
     #verdict = false
     #with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
     if os.path.isfile("/home/root/ADL-P IPU6 SDK User Guide.docx") == 0:
-        print ("Sensor Configuration Document PASS")
-    else
+            print ("Sensor Configuration Document PASS")
+    else :
         print ("Sensor Configuration Document FAILED")
         sys.exit(0)
 def psys_conf_doc():
@@ -287,7 +287,7 @@ def psys_conf_doc():
     #with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
     if os.path.isfile("/home/root/ADL-P IPU6 SDK User Guide.docx") == 0:
         print ("Psys USB Document PASS")
-    else
+    else:
         print ("Psys USB Document FAILED")
         sys.exit(0)
 def aptina1():
@@ -374,13 +374,13 @@ def lib_check():
     print("----- lib_check Checking -----")
     if os.path.isfile("/home/root/usb_camera_test_tool/lib") == 0:
           print ("lib_check PASS")
-        else:
+    else:
           print ("lib_check FAILED")
 def inc_check():
     print("----- inc_check Checking -----")
     if os.path.isfile("/home/root/usb_camera_test_tool/include") == 0:
           print ("inc_check PASS")
-        else:
+    else:
           print ("inc_check FAILED")  
 def suffix_a():
     print("----- suffix_a Checking -----")
@@ -411,7 +411,7 @@ def slave_a():
 
     #verdict = false
     with open('/home/root/slave_a.log') as f:
-        if 'Error: invalid literal for int() with base 16: '10000x1111'' in f.read():
+        if 'Error' in f.read():
           print ("slave_a PASS")
         else:
           print ("slave_a FAILED") 
@@ -422,7 +422,7 @@ def slave_b():
 
     #verdict = false
     with open('/home/root/slave_b.log') as f:
-        if 'Error: invalid literal for int() with base 16: '10000x1111'' in f.read():
+        if 'Error' in f.read():
           print ("slave_b PASS")
         else:
           print ("slave_b FAILED")
@@ -433,7 +433,7 @@ def lane_a():
 
     #verdict = false
     with open('/home/root/lane_a.log') as f:
-        if 'Error: invalid literal for int() with base 10: '@@'' in f.read():
+        if 'Error' in f.read():
           print ("lane_a PASS")
         else:
           print ("lane_a FAILED")
@@ -444,7 +444,7 @@ def lane_b():
 
     #verdict = false
     with open('/home/root/lane_b.log') as f:
-        if 'Error: invalid literal for int() with base 10: '@@'' in f.read():
+        if 'Error' in f.read():
           print ("lane_b PASS")
         else:
           print ("lane_b FAILED")
@@ -455,7 +455,7 @@ def port_a():
 
     #verdict = false
     with open('/home/root/port_a.log') as f:
-        if 'Error: invalid literal for int() with base 10: 'a'' in f.read():
+        if 'Error' in f.read():
           print ("port_a PASS")
         else:
           print ("port_a FAILED")
@@ -466,7 +466,7 @@ def port_b():
 
     #verdict = false
     with open('/home/root/port_b.log') as f:
-        if 'Error: invalid literal for int() with base 10: 'b'' in f.read():
+        if 'Error' in f.read():
           print ("port_b PASS")
         else:
           print ("port_b FAILED")
@@ -506,7 +506,7 @@ def build2_0x10_pipe():
 
     #verdict = false
     with open('/home/root/build2_0x10_pipe.log') as f:
-        if 'Registering meta implementation 'GstCamerasrcMeta' without init function' in f.read():
+        if 'Registering meta implementation' in f.read():
           print ("build2_0x10_pipe PASS")
         else:
           print ("build2_0x10_pipe FAILED")

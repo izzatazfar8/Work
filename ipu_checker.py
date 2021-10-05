@@ -510,6 +510,47 @@ def build2_0x10_pipe():
           print ("build2_0x10_pipe PASS")
         else:
           print ("build2_0x10_pipe FAILED")
+def sensor_conf_1():
+    print("----- sensor_conf_1 Checking -----")
+    os.system("dmesg | grep ar0234  > /home/root/sensor_conf_1.log")
+
+    #verdict = false
+    with open('/home/root/sensor_conf_1.log') as f:
+        if 'stream off ar0234 a' in f.read():
+          print ("sensor_conf_1 PASS")
+        else:
+          print ("sensor_conf_1 FAILED")
+def sensor_conf_2():
+    print("----- sensor_conf_2 Checking -----")
+    os.system("dmesg | grep ar0234  > /home/root/sensor_conf_2.log")
+
+    #verdict = false
+    with open('/home/root/sensor_conf_2.log') as f:
+        if 'stream off ar0234 b' in f.read():
+          print ("sensor_conf_2 PASS")
+        else:
+          print ("sensor_conf_2 FAILED")
+def subdev5():
+    print("----- subdev5 Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5  > /home/root/subdev5.log")
+
+    #verdict = false
+    with open('/home/root/subdev5.log') as f:
+        if 'digital_gain' in f.read():
+          print ("subdev5 PASS")
+        else:
+          print ("subdev5 FAILED")
+def subdev5_output():
+    print("----- subdev5_output Checking -----")
+    os.system("v4l2-ctl --all -d /dev/v4l-subdev5  > /home/root/subdev5_output.log")
+
+    #verdict = false
+    with open('/home/root/subdev5_output.log') as f:
+        if 'Cannot open device' in f.read():
+          print ("subdev5_output FAILED")
+        else:
+          print ("subdev5_output PASS")
+          
 def main():
     print("----- IPU Module/Firmware Checking -----")
     script_name = str(sys.argv[0])
@@ -622,6 +663,14 @@ def main():
         build2_config()
     elif args.c == "build2_0x10_pipe":
         build2_0x10_pipe()
+    elif args.c == "sensor_conf_1":
+        sensor_conf_1()
+    elif args.c == "sensor_conf_2":
+        sensor_conf_2()
+    elif args.c == "subdev5":
+        subdev5()
+    elif args.c == "subdev5_output":
+        subdev5_output()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

@@ -254,7 +254,7 @@ def Pdata_dynamic_doc():
 
     #verdict = false
     with open('/home/root/ADL-P IPU6 SDK User Guide.docx') as f:
-        if 'User also can get sensor platform data binary file for dynamic change sensorâ€™s platform data.' in f.read():
+        if 'User also can get sensor platform data binary' in f.read():
           print ("Pdata dynamic doc Checking PASS")
         else:
           print ("Pdata dynamic doc Checking FAILED")

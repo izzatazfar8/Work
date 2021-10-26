@@ -550,6 +550,37 @@ def subdev5_output():
           print ("subdev5_output FAILED")
         else:
           print ("subdev5_output PASS")
+def mipi_1hour():
+    print("----- mipi_1hour Checking -----")
+    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=6000 ! video/x-raw, format=NV12, width=1280, height=960 ! msdkvpp ! glimagesink icamerasrc device-name=ar0234-2 ! video/x-raw, format=NV12, width=1280, height=960 ! msdkvpp ! glimagesink  > /home/root/mipi_1hour.log")
+
+    #verdict = false
+    with open('/home/root/mipi_1hour.log') as f:
+        if 'Execution ended after 1' in f.read():
+          print ("mipi_1hour PASS")
+        else:
+          print ("mipi_1hour FAILED")
+def usb_1hour():
+    print("----- usb_1hour Checking -----")
+    os.system("cd /home/root/icg_linux_ipu_sdk/usb_camera_test_tool")
+    os.system("./usb_camera_test -p 3 -f 144000 -c 12  > /home/root/usb_1hour.log")
+
+    #verdict = false
+    with open('/home/root/usb_1hour.log') as f:
+        if 'frames#144000 buffer dequeued' in f.read():
+          print ("usb_1hour PASS")
+        else:
+          print ("usb_1hour FAILED")
+def mipi_24hour():
+    print("----- mipi_24hour Checking -----")
+    os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=144000 ! video/x-raw, format=NV12, width=1280, height=960 ! msdkvpp ! glimagesink icamerasrc device-name=ar0234-2 ! video/x-raw, format=NV12, width=1280, height=960 ! msdkvpp ! glimagesink  > /home/root/mipi_24hour.log")
+
+    #verdict = false
+    with open('/home/root/mipi_24hour.log') as f:
+        if 'Execution ended after 24' in f.read():
+          print ("mipi_24hour PASS")
+        else:
+          print ("mipi_24hour FAILED")
           
 def main():
     print("----- IPU Module/Firmware Checking -----")

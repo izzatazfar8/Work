@@ -671,6 +671,12 @@ def main():
         subdev5()
     elif args.c == "subdev5_output":
         subdev5_output()
+    elif args.c == "mipi_1hour":
+        mipi_1hour()
+    elif args.c == "usb_1hour":
+        usb_1hour()
+    elif args.c == "mipi_24hour":
+        mipi_24hour()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

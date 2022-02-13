@@ -11,8 +11,20 @@ parser.add_argument('-op', help='Option = [streaming, driver_check]')
 
 args = parser.parse_args()
 
-target_user = 'root'
-target_pass = ''
+if args.os == "ubuntu":
+    target_user = 'ubuntu'
+    target_pass = 'intel123'
+    print ("Running on Ubuntu")
+    os.system ("cd /home/applications.audio.validation.sve-bm-audio/ ; sudo sshpass -p 'intel123' scp -r siv_test_collateral/siv_val-io-test-apps/audio/siv_test_collateral_audio_SUT/ ubuntu@" + args.sut_ip + ":/home/ubuntu")
+    
+else:
+    target_user = 'root'
+    target_pass = ''
+    print ("Running on Yocto")
+
+
+#target_user = 'root'
+#target_pass = ''
 
 if args.sut_ip is not None:
     sut_ip = args.sut_ip

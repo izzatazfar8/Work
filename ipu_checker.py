@@ -571,6 +571,17 @@ def usb_1hour():
           print ("usb_1hour PASS")
         else:
           print ("usb_1hour FAILED")
+def usb_24hour():
+    print("----- usb_24hour Checking -----")
+    os.system("cd /home/root/icg_linux_ipu_sdk/usb_camera_test_tool")
+    os.system("./usb_camera_test -p 3 -f 3456000  -c 12  > /home/root/usb_24hour.log")
+
+    #verdict = false
+    with open('/home/root/usb_24hour.log') as f:
+        if 'frames#3456000  buffer dequeued' in f.read():
+          print ("usb_24hour PASS")
+        else:
+          print ("usb_24hour FAILED")
 def mipi_24hour():
     print("----- mipi_24hour Checking -----")
     os.system("gst-launch-1.0 icamerasrc device-name=ar0234 num-buffers=144000 ! video/x-raw, format=NV12, width=1280, height=960 ! msdkvpp ! glimagesink icamerasrc device-name=ar0234-2 ! video/x-raw, format=NV12, width=1280, height=960 ! msdkvpp ! glimagesink  > /home/root/mipi_24hour.log")
@@ -706,6 +717,8 @@ def main():
         mipi_1hour()
     elif args.c == "usb_1hour":
         usb_1hour()
+    elif args.c == "usb_24hour":
+        usb_24hour()
     elif args.c == "mipi_24hour":
         mipi_24hour()
     else:

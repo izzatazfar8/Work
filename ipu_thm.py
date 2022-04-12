@@ -533,6 +533,15 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
+    elif option == "usb_24hour":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c usb_24hour")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("\nSUT output:\n")
+        print (output)
+        sys.exit(0)
     elif option == "mipi_24hour":
         stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c mipi_24hour")
         print ("\nSUT executing " + option + " command...\n")
@@ -551,5 +560,6 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
+    
 
 main()

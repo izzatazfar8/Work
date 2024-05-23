@@ -8,20 +8,23 @@ parser = argparse.ArgumentParser(prog=script_name, description=usage)
 parser.add_argument('-sut_ip', help='SUT IP')
 parser.add_argument('-thm_ip', help='THM IP')
 parser.add_argument('-op', help='Option = [streaming, driver_check]')
-
+parser.add_argument('-sut_user', help='SUT User')
+parser.add_argument('-sut_pass', help='SUT Password')
+parser.add_argument('-os', help='OS')
+parser.add_argument('-ipudevice', help='Optional: target ipu device ar0234 | lt6911uxc', default='ar0234')
+parser.add_argument('-repo_path', help='Optional: local THM IPU repo path', default='/home/user/applications.validation.ipu.sve-ipu-master/')
 args = parser.parse_args()
 
 if args.os == "ubuntu":
-    target_user = 'ubuntu'
-    target_pass = 'intel123'
+    target_user = args.sut_user
+    target_pass = args.sut_pass
     print ("Running on Ubuntu")
-    os.system ("cd /home/applications.audio.validation.sve-bm-audio/ ; sudo sshpass -p 'intel123' scp -r siv_test_collateral/siv_val-io-test-apps/audio/siv_test_collateral_audio_SUT/ ubuntu@" + args.sut_ip + ":/home/ubuntu")
+    #os.system ("sudo cp -r ipu_checker.py/ /home")
     
 else:
-    target_user = 'root'
-    target_pass = ''
+    target_user = args.sut_user
+    target_pass = args.sut_pass
     print ("Running on Yocto")
-
 
 #target_user = 'root'
 #target_pass = ''
@@ -51,37 +54,240 @@ host,port = sut_ip,22
 def main():
 
     if option == "ipu_driver_checker":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_driver_checker")
+	#stdin, stdout, stderr = sut.exec_command("rpm -ivh --nodeps --force /home/root/ipu_rpm_mr1/aiqb-1.0.0-202204101601.53b1709.x86_64.rpm")
+	#time.sleep(5)
+	#stdin, stdout, stderr = sut.exec_command("rpm -ivh --nodeps --force /home/root/ipu_rpm_mr1/libiaaiq-1.0.0-202204101559.4f5d560.x86_64.rpm")
+	#time.sleep(5)
+	#stdin, stdout, stderr = sut.exec_command("rpm -ivh --nodeps --force /home/root/ipu_rpm_mr1/libiacss-1.0.0-20220410_1500.20220410.678f932d.x86_64.rpm")
+	#time.sleep(5)
+	#stdin, stdout, stderr = sut.exec_command("rpm -ivh --nodeps --force /home/root/ipu_rpm_mr1/libcamhal-1.0.0-20220410_1500.20220410.a339062f.x86_64.rpm")
+	#time.sleep(5)
+	#stdin, stdout, stderr = sut.exec_command("rpm -ivh --nodeps --force /home/root/ipu_rpm_mr1/icamerasrc-1.0.0-20220410_1500.20220410.f162e1d.x86_64.rpm")
+	#time.sleep(5)
+	#stdin, stdout, stderr = sut.exec_command("rpm -ivh --nodeps --force /home/root/ipu_rpm_mr1/ipu6epfw-1.0.0-20220410_1500.20220410.be8cff5.signed.x86_64.rpm")
+	#time.sleep(5)
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c ipu_driver_checker")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
         sut.close()
-        print ("\nSUT output:\n")
-        print (output)
+        print ("PASS")
+        #print (output)
+
         sys.exit(0)
 
     elif option == "ipu_modules_checker":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c ipu_modules_checker")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c ipu_modules_checker")  #-ipudevice " + args.ipudevice
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
         sut.close()
-        print ("\nSUT output:\n")
-        print (output)
+        print ("PASS")
+        #print (output)
+
         sys.exit(0)
+
+    elif option == "copyfiles_fromhost":
+        print ("\nSUT executing " + option + " command...\n")
+        os_name = "Win" if os.name.rfind("nt") >= 0 else "Linux"
+        destination = "%s@%s:%s" % (target_user,args.sut_ip,'/home/user/')
+        source = args.repo_path + "/*"
+        
+        if os_name == "Linux":  #COPY FROM LINUX THM
+            copy_cmd = "sshpass -p %s scp -r %s %s" %(target_pass,source,destination)
+        else: #COPY FROM WINDOWS THM   , need install pscp https://www.putty.org/
+            copy_cmd = "pscp -pw %s -r %s %s" %(target_pass,source,destination)
+        print(copy_cmd)    
+        subprocess.call(copy_cmd,shell=True) # Linux need shell=True for the sshpass copy work
     
-    elif option == "exposure":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c exposure")
+    elif option == "lt6911uxc_detection_a":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c lt6911uxc_detection_a")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
         sut.close()
-        print ("\nSUT output:\n")
-        print (output)
+        print ("PASS")
+        #print (output)
+
         sys.exit(0)
-		
+
+    elif option == "lt6911uxc_detection_b":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c lt6911uxc_detection_b")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+
+    elif option == "rpm_loading":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c rpm_loading")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "environment_checking":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c environment_checking")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "bios_checking":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c bios_checking")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "res_3840":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c res_3840")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "res_2560":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c res_2560")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "res_1920":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c res_1920")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "res_1280":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c res_1280")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "exposure":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c exposure")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "3840_pipeline":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c pipeline_3840")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "3840_60_pipeline":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c pipeline_3840_60")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)    
+    elif option == "2560_pipeline":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c pipeline_2560")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "1920_pipeline":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c pipeline_1920")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+    elif option == "1280_pipeline":
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c pipeline_1280")
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+
+    elif re.search("fps_\d\d\d\d_30hz", option):
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c " + option)
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+
+    elif re.search("fps_\d\d\d\d_60hz", option):
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c " + option)
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0)
+
+    elif re.search("hdmi_in_functional_\d\d\d\d_\d\dhz", option):  #hdmi_in_functional_\d\d\d\d_\d\dhz
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c " + option)
+        print ("\nSUT executing " + option + " command...\n")
+        time.sleep(3)
+        output = stdout.readlines()
+        sut.close()
+        print ("PASS")
+        #print (output)
+
+        sys.exit(0) 
+    
     elif option == "digital_gain":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c digital_gain")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -91,7 +297,7 @@ def main():
         sys.exit(0)
         
     elif option == "analog_gain":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c analog_gain")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -101,7 +307,7 @@ def main():
         sys.exit(0)
     
     elif option == "check_binary":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c check_binary")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c check_binary")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -110,7 +316,7 @@ def main():
         print (output)
         sys.exit(0)    
     elif option == "kernel_conf":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c kernel_conf")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c kernel_conf")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -120,7 +326,7 @@ def main():
         sys.exit(0)
         
     elif option == "dynamic_conf":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c dynamic_conf")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c dynamic_conf")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -130,7 +336,7 @@ def main():
         sys.exit(0)
         
     elif option == "single_fps":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c single_fps")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c single_fps")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -140,7 +346,7 @@ def main():
         sys.exit(0)    
         
     elif option == "dual_fps":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c dual_fps")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c dual_fps")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -149,7 +355,7 @@ def main():
         print (output)
         sys.exit(0)  
     elif option == "Pdata_dynamic_doc":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c Pdata_dynamic_doc")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c Pdata_dynamic_doc")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -158,7 +364,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "Pdata_kernel_doc":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c Pdata_kernel_doc")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c Pdata_kernel_doc")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -167,7 +373,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "psys_conf_doc":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c psys_conf_doc")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c psys_conf_doc")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -176,7 +382,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "sensor_conf_doc":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c sensor_conf_doc")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c sensor_conf_doc")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -186,7 +392,7 @@ def main():
         sys.exit(0)
         
     elif option == "exposure_min_0":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c exposure_min_0")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c exposure_min_0")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -196,7 +402,7 @@ def main():
         sys.exit(0)    
         
     elif option == "exposure_max_2355":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c exposure_max_2355")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c exposure_max_2355")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -205,7 +411,7 @@ def main():
         print (output)
         sys.exit(0)  
     elif option == "exposure_def_2355":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c exposure_def_2355")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c exposure_def_2355")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -214,7 +420,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "exposure_val_2355":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c exposure_val_2355")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c exposure_val_2355")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -224,7 +430,7 @@ def main():
         sys.exit(0)
         
     elif option == "digital_gain_min_0":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_min_0")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c digital_gain_min_0")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -234,7 +440,7 @@ def main():
         sys.exit(0)    
         
     elif option == "digital_gain_max_2047":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_max_2047")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c digital_gain_max_2047")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -243,7 +449,7 @@ def main():
         print (output)
         sys.exit(0)  
     elif option == "digital_gain_def_128":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_def_128")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c digital_gain_def_128")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -252,7 +458,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "digital_gain_val_128":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c digital_gain_val_128")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c digital_gain_val_128")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -262,7 +468,7 @@ def main():
         sys.exit(0)
         
     elif option == "analog_gain_min_0":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain_min_0")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c analog_gain_min_0")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -272,7 +478,7 @@ def main():
         sys.exit(0)    
         
     elif option == "analog_gain_max_127":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain_max_127")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c analog_gain_max_127")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -281,7 +487,7 @@ def main():
         print (output)
         sys.exit(0)  
     elif option == "aptina1":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c aptina1")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c aptina1")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -290,7 +496,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "aptina2":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c aptina2")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c aptina2")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -299,7 +505,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "usb_app_exec":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c usb_app_exec")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c usb_app_exec")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -308,7 +514,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "cam1_nv12":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c cam1_nv12")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c cam1_nv12")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -317,7 +523,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "cam2_nv12":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c cam2_nv12")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c cam2_nv12")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -326,7 +532,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "dual_nv12":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c dual_nv12")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c dual_nv12")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -335,7 +541,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "usb1_active":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c usb1_active")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c usb1_active")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -344,7 +550,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "usb2_active":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c usb2_active")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c usb2_active")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -353,7 +559,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "lib_check":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c lib_check")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c lib_check")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -362,7 +568,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "inc_check":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c inc_check")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c inc_check")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -371,7 +577,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "analog_gain_val_14":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c analog_gain_val_14")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c analog_gain_val_14")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -381,7 +587,7 @@ def main():
         sys.exit(0)
     
     elif option == "suffix_a":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c suffix_a")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c suffix_a")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -390,7 +596,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "suffix_b":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c suffix_b")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c suffix_b")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -399,7 +605,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "slave_a":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c slave_a")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c slave_a")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -408,7 +614,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "slave_b":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c slave_b")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c slave_b")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -417,7 +623,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "lane_a":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c lane_a")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c lane_a")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -426,7 +632,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "lane_b":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c lane_b")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c lane_b")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -435,7 +641,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "port_a":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c port_a")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c port_a")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -444,7 +650,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "port_b":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c port_b")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c port_b")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -453,7 +659,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "build2_kernel":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_kernel")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c build2_kernel")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -462,7 +668,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "build2_fw_bin":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_fw_bin")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c build2_fw_bin")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -471,7 +677,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "build2_config":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_config")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c build2_config")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -480,7 +686,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "build2_0x10_pipe":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c build2_0x10_pipe")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c build2_0x10_pipe")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -489,7 +695,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "sensor_conf_1":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c sensor_conf_1")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c sensor_conf_1")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -498,7 +704,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "sensor_conf_2":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c sensor_conf_2")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c sensor_conf_2")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -507,7 +713,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "subdev5":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c subdev5")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c subdev5")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -516,7 +722,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "mipi_1hour":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c mipi_1hour")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c mipi_1hour")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -525,7 +731,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "usb_1hour":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c usb_1hour")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c usb_1hour")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -534,7 +740,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "usb_24hour":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c usb_24hour")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c usb_24hour")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -543,7 +749,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "mipi_24hour":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c mipi_24hour")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c mipi_24hour")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()
@@ -552,7 +758,7 @@ def main():
         print (output)
         sys.exit(0)
     elif option == "subdev5_output":
-        stdin, stdout, stderr = sut.exec_command("python3 /home/root/ipu_checker.py -c subdev5_output")
+        stdin, stdout, stderr = sut.exec_command("python3 /home/" + target_user + "/ipu_checker.py -c subdev5_output")
         print ("\nSUT executing " + option + " command...\n")
         time.sleep(3)
         output = stdout.readlines()

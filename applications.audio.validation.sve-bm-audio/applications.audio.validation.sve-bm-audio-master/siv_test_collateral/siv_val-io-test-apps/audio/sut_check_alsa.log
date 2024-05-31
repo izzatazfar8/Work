@@ -1,0 +1,10 @@
+[    0.342778] Advanced Linux Sound Architecture Driver Initialized.
+[    2.694574] kmb_tlv3204 sound: ASoC: failed to init link kmb_audio_card: -517
+[    2.701758] kmb_tlv3204 sound: snd_soc_register_card failed (-517)
+[    2.855841] kmb_tlv3204 sound: ASoC: failed to init link kmb_audio_card: -517
+[    2.863015] kmb_tlv3204 sound: snd_soc_register_card failed (-517)
+[    3.005775] kmb_tlv3204 sound: ASoC: failed to init link kmb_audio_card: -517
+[    3.012948] kmb_tlv3204 sound: snd_soc_register_card failed (-517)
+[    6.958869] kmb_tlv3204 sound: tlv320aic32x4-hifi <-> 20110000.i2s mapping ok
+[    6.970630] kmb_tlv3204 sound: tlv320aic32x4-hifi <-> 20140000.i2s mapping ok
+[    6.977826] kmb_tlv3204 sound: ASoC: no DMI vendor name!

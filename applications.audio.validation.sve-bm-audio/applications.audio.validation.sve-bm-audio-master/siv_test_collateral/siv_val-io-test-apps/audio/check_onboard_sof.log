@@ -1,0 +1,20 @@
+sof-audio-pci 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if info 0x040100
+sof-audio-pci 0000:00:1f.3: enabling device (0000 -> 0002)
+sof-audio-pci 0000:00:1f.3: DSP detected with PCI class/subclass/prog-if 0x040100
+sof-audio-pci 0000:00:1f.3: bound 0000:00:02.0 (ops i915_audio_component_bind_ops [i915])
+sof-audio-pci 0000:00:1f.3: use msi interrupt mode
+sof-audio-pci 0000:00:1f.3: hda codecs found, mask 5
+sof-audio-pci 0000:00:1f.3: using HDA machine driver skl_hda_dsp_generic now
+sof-audio-pci 0000:00:1f.3: DMICs detected in NHLT tables: 0
+sof-audio-pci 0000:00:1f.3: unknown sof_ext_man header type 6 size 0x20
+sof-audio-pci 0000:00:1f.3: Firmware info: version 1:7:0-f8bb0
+sof-audio-pci 0000:00:1f.3: Firmware: ABI 3:18:1 Kernel ABI 3:17:0
+sof-audio-pci 0000:00:1f.3: warn: FW ABI is more recent than kernel
+sof-audio-pci 0000:00:1f.3: unknown sof_ext_man header type 3 size 0x30
+sof-audio-pci 0000:00:1f.3: unknown sof_ext_man header type 5 size 0x20
+sof-audio-pci 0000:00:1f.3: Firmware info: version 1:7:0-f8bb0
+sof-audio-pci 0000:00:1f.3: Firmware: ABI 3:18:1 Kernel ABI 3:17:0
+sof-audio-pci 0000:00:1f.3: warn: FW ABI is more recent than kernel
+sof-audio-pci 0000:00:1f.3: Topology: ABI 3:18:1 Kernel ABI 3:17:0
+sof-audio-pci 0000:00:1f.3: warn: topology ABI is more recent than kernel
+sof-audio-pci 0000:00:1f.3: ASoC: Parent card not yet available, widget card binding deferred

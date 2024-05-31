@@ -469,5 +469,6 @@ def main():
         print ("\nSUT output:\n")
         print (output)
         sys.exit(0)
-        print ("AUDIO AUDIO")
+        print ("AUDIO AUDIO AUDIO")
+        print ("AUDIO")
 main()

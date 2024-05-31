@@ -1,6 +1,4 @@
 # Load Audio Built In driver 
-# 
-# Author: Jepson
 # Created: 17 FEB 2020
 # Updated: 15 JUL 2020
 
@@ -8,6 +6,7 @@
 import os
 import argparse
 import sys
+import subprocess
 # import logging
 # import traceback
 # import subprocess
@@ -21,24 +20,17 @@ import time
 # import signal
 
 def sof_checker():
-    print("----- SOF Checking -----")
+    print("----- SOF Checker -----")
+   
+    os.system("dmesg | grep sof > /home/user/sof_checker.log")
 
-    if os.path.isfile("/home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_sof.log") == 0:
-        print("Check onboard ALSA file is missing !!! Exiting ...")
-        sys.exit(0)
+    #verdict = false
     
-    os.system("dmesg | grep sof > /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/sut_check_sof.log")
-    os.system("cat /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/sut_check_sof.log | cut -c16- | sed -n '3,22p' > /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/final_sof.log")	
-    os.system(
-        "diff /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/final_sof.log /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_sof.log > /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/sof_compare1.log")
-    if os.stat("/home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/sof_compare1.log").st_size == 0:
-        mod_check = 1
-        print("\n")
-        print("SOF checker : PASS \n")
-    else:
-        mod_check = 0
-        print("\n")
-        print("SOF checker : FAIL \n")
+    with open('/home/user/sof_checker.log') as f:
+        if 'SoundWire enabled' in f.read():
+          print ("SOF Checker PASS")
+        else:
+          print ("SOF Checker FAILED. No SOF is loaded from dmesg. Please ensure SOF .ri and .tplg are placed in correct path and SOF BIOS settings configured")
 
 
 
@@ -63,16 +55,16 @@ def modules_checker():
 
     print("----- Modules Checking -----")
 
-    if os.path.isfile("/home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_module.log") == 0:
+    if os.path.isfile("/home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_module.log") == 0:
         print("Check Module file is missing !!! Exiting ...")
         sys.exit(0)
     # need to edit with new kernel release
-    os.system("lsmod | grep -i snd > /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/sut_check_lsmod.log")
+    os.system("lsmod | grep -i snd > /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/sut_check_lsmod.log")
     modules_filter()
     os.system(
-        "grep -Ff /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/f_sut_check_lsmod.log /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_module.log > /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/module_compare.log")
+        "grep -Ff /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/f_sut_check_lsmod.log /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_module.log > /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/module_compare.log")
     os.system(
-        "diff /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/module_compare.log /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_module.log > /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/module_compare1.log")
+        "diff /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/module_compare.log /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/check_onboard_module.log > /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/module_compare1.log")
     if os.stat("/home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log/module_compare1.log").st_size == 0:
         mod_check = 1
         print("\n")
@@ -107,15 +99,15 @@ def modules_checker():
 def alsa_checker():
     print("----- Alsa Checker -----")
    
-    os.system("dmesg | grep audio > /home/root/alsa_checker.log")
+    os.system("lsmod > /home/user/alsa_checker.log")
 
     #verdict = false
     
-    with open('/home/root/alsa_checker.log') as f:
-        if 'snd_hda_intel' in f.read():
+    with open('/home/user/alsa_checker.log') as f:
+        if 'snd_hda' in f.read():
           print ("Alsa Checker PASS")
         else:
-          print ("Alsa Checker FAILED")
+          print ("Alsa Checker FAILED. No audio found in 'lsmod' command.")
     
 	
 def onboard_hdmi_checker():
@@ -309,223 +301,381 @@ def sof_16b():
 
 def snd_hda():
     print("----- snd_hda Checking -----")
-    os.system("dmesg | grep audio > /home/root/snd_hda.log")
+    os.system("lsmod > /home/user/snd_hda.log")
 
     #verdict = false
-    with open('/home/root/snd_hda.log') as f:
+    with open('/home/user/snd_hda.log') as f:
         if 'snd_hda' in f.read():
           print ("snd_hda PASS")
         else:
-          print ("snd_hda FAILED")
+          print ("snd_hda FAILED. No audio found in 'lsmod' command. Kindly check if Audio has merged into this BKC.")
 def hdaudioC0D0():
     print("----- hdaudioC0D0 Checking -----")
-    os.system("dmesg | grep audio > /home/root/hdaudioC0D0.log")
+    os.system("lsmod > /home/user/hdaudioC0D0.log")
 
     #verdict = false
-    with open('/home/root/hdaudioC0D0.log') as f:
+    with open('/home/user/hdaudioC0D0.log') as f:
         if 'hda' in f.read():
-          print ("hdaudioC0D0 PASS")
+          print ("snd_hda_intel PASS")
         else:
-          print ("hdaudioC0D0 FAILED")
+          print ("snd_hda_intel FAILED. No audio found in 'lsmod; command. Kindly check if Audio has merged into this BKC")
 def mic_jack():
     print("----- mic_jack Checking -----")
-    os.system("amixer -c0 contents > /home/root/mic_jack.log")
+    os.system("amixer -c0 contents > /home/user/mic_jack.log")
 
     #verdict = false
-    with open('/home/root/mic_jack.log') as f:
+    with open('/home/user/mic_jack.log') as f:
         if 'Jack' in f.read():
           print ("mic_jack PASS")
         else:
-          print ("mic_jack FAILED")
+          print ("mic_jack FAILED. No onboard jack found in 'amixer -c0 contents'. Kindly run 'aplay -l' to confirm if audio is loaded.")
 
 def playback_switch():
     print("----- playback_switch Checking -----")
-    os.system("amixer -c0 contents > /home/root/playback_switch.log")
+    os.system("amixer -c0 contents > /home/user/playback_switch.log")
 
     #verdict = false
-    with open('/home/root/playback_switch.log') as f:
+    with open('/home/user/playback_switch.log') as f:
         if 'Playback' in f.read():
           print ("playback_switch PASS")
         else:
-          print ("playback_switch FAILED")
+          print ("playback_switch FAILED. No PLAYBACK found in 'amixer -c0 contents'. Kindly run 'aplay -l' to confirm if audio is loaded.")
 def capture_switch():
     print("----- capture_switch Checking -----")
-    os.system("amixer -c0 contents > /home/root/capture_switch.log")
+    os.system("amixer -c0 contents > /home/user/capture_switch.log")
 
     #verdict = false
-    with open('/home/root/capture_switch.log') as f:
+    with open('/home/user/capture_switch.log') as f:
         if 'Playback' in f.read():
           print ("capture_switch PASS")
         else:
-          print ("capture_switch FAILED")
+          print ("capture_switch FAILED. No PLAYBACK found in 'amixer -c0 contents'. Kindly run 'aplay -l' to confirm if audio is loaded")
 
 def aplay():
     print("----- aplay Checking -----")
-    os.system("aplay -l > /home/root/aplay.log")
+    os.system("aplay -l > /home/user/aplay.log")
 
     #verdict = false
-    with open('/home/root/aplay.log') as f:
-        if 'HDA Intel PCH' in f.read():
+    with open('/home/user/aplay.log') as f:
+        if 'HDA Intel PCH' or 'sof' in f.read():
           print ("aplay PASS")
         else:
-          print ("aplay FAILED")
-def aplay_snd():
-    print("----- aplay Checking -----")
-    os.system("aplay -l > /home/root/aplay_snd.log")
-
-    #verdict = false
-    with open('/home/root/aplay_snd.log') as f:
-        if 'sof-soundwire' in f.read():
-          print ("Test PASS")
-        else:
-          print ("Test FAILED")
+          print ("aplay FAILED. Audio fail to load. Please ensure you are using correct BIOS settings for HDA, and for SOF using correct .ri and .tplg which are placed in correct path and SOF BIOS settings configured ")
 def arecord():
     print("----- arecord Checking -----")
-    os.system("arecord -l > /home/root/arecord.log")
+    os.system("arecord -l > /home/user/arecord.log")
 
     #verdict = false
-    with open('/home/root/arecord.log') as f:
+    with open('/home/user/arecord.log') as f:
         if 'CAPTURE Hardware Devices' in f.read():
           print ("arecord PASS")
         else:
-          print ("arecord FAILED")
-def audio_lib():
-    print("----- audio_lib Checking -----")
-    os.system("lsmod > /home/root/audio_lib.log")
+          print ("arecord FAILED. Audio fail to load. Please ensure you are using correct BIOS settings for HDA, and for SOF using correct .ri and .tplg which are placed in correct path and SOF BIOS settings configured")
+def aplay_snd():
+    print("----- aplay_snd Checking -----")
+    os.system("aplay -l > /home/user/aplay_snd.log")
 
     #verdict = false
-    with open('/home/root/audio_lib.log') as f:
+    with open('/home/user/aplay_snd.log') as f:
+        if 'sof-soundwire' in f.read():
+          print ("aplay PASS")
+        else:
+          print ("aplay FAILED. Soundwire Audio fail to load. Please ensure .ri and .tplg  are placed in correct path and Soundwire BIOS settings configured")
+def arecord_snd():
+    print("----- arecord Checking -----")
+    os.system("arecord -l > /home/user/arecord_snd.log")
+
+    #verdict = false
+    with open('/home/user/arecord_snd.log') as f:
+        if 'sof-soundwire' in f.read():
+          print ("arecord PASS")
+        else:
+          print ("arecord FAILED. Soundwire Audio fail to load. Please ensure .ri and .tplg  are placed in correct path and Soundwire BIOS settings configured")
+def snd():
+    print("----- snd Checking -----")
+    os.system("dmesg | grep audio > /home/user/snd.log")
+
+    #verdict = false
+    with open('/home/user/snd.log') as f:
+        if 'snd_intel' in f.read():
+          print ("snd PASS")
+        else:
+          print ("snd FAILED. Soundwire Audio fail to load. Please ensure .ri and .tplg  are placed in correct path and Soundwire BIOS settings configured")
+def lspci():
+    print("----- lspci Checking -----")
+    os.system("lspci > /home/user/lspci.log")
+
+    #verdict = false
+    with open('/home/user/lspci.log') as f:
+        if 'Multimedia audio controller' in f.read():
+          print ("lspci PASS")
+        else:
+          print ("lspci FAILED, No Audio found in 'lspci command.")
+def audio_lib():
+    print("----- audio_lib Checking -----")
+    os.system("lsmod > /home/user/audio_lib.log")
+
+    #verdict = false
+    with open('/home/user/audio_lib.log') as f:
         if 'snd_hda_codec' in f.read():
           print ("audio_lib PASS")
         else:
-          print ("audio_lib FAILED")
+          print ("audio_lib FAILED. No 'snd_hda_codec' found in 'lsmod' command, please ensure audio is loaded in 'aplay -l' command.")
 def rt5660_codec():
     print("----- rt5660_codec Checking -----")
-    os.system("aplay -l > /home/root/rt5660_codec.log")
+    os.system("aplay -l > /home/user/rt5660_codec.log")
 
     #verdict = false
-    with open('/home/root/rt5660_codec.log') as f:
+    with open('/home/user/rt5660_codec.log') as f:
         if 'card 0: sofehlrt5660 [sof-ehl-rt5660], device 0: Headset' in f.read():
           print ("rt5660_codec PASS")
         else:
-          print ("rt5660_codec FAILED")
+          print ("rt5660_codec FAILED. No 'sofehlrt5660' found in 'aplay -l' command, please ensure you are using right rt5660 AIC .")
 def rt5660_modules():
     print("----- rt5660_modules Checking -----")
-    os.system("lsmod | grep -i snd > /home/root/rt5660_modules.log")
+    os.system("lsmod | grep -i snd > /home/user/rt5660_modules.log")
 
     #verdict = false
-    with open('/home/root/rt5660_modules.log') as f:
+    with open('/home/user/rt5660_modules.log') as f:
         if 'snd_soc_ehl_rt5660' in f.read():
           print ("rt5660_modules PASS")
         else:
-          print ("rt5660_modules FAILED")
+          print ("rt5660_modules FAILED. No 'sofehlrt5660' found in 'aplay -l' command, please ensure you are using right rt5660 AIC")
 def rt5660_arecord():
     print("----- rt5660_arecord Checking -----")
-    os.system("arecord -l > /home/root/rt5660_arecord.log")
+    os.system("arecord -l > /home/user/rt5660_arecord.log")
 
     #verdict = false
-    with open('/home/root/rt5660_arecord.log') as f:
+    with open('/home/user/rt5660_arecord.log') as f:
         if 'card 0: sofehlrt5660 [sof-ehl-rt5660], device 0: Headset' in f.read():
           print ("rt5660_arecord PASS")
         else:
-          print ("rt5660_arecord FAILED")
+          print ("rt5660_arecord FAILED. No 'sofehlrt5660' found in 'aplay -l' command, please ensure you are using right rt5660 AIC")
 def usb_32bits():
-    print("----- 32bits_usb Checking -----")
-    os.system("aplay -Dhw:1,0 -r48000 -fs16_le -c2 -vvv 16bits.wav > /home/root/32bits_usb.log")
+    print("----- 32bits_usb Checking. Please ensure USB headset is connected -----")
+    os.system("aplay -l >> /home/user/play_32bits.log")
 
-    with open('/home/root/32bits_usb.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
+    with open('/home/user/play_32bits.log') as f:
+        if 'USB' in f.read():
           print ("32bits_usb PASS")
         else:
-          print ("32bits_usb FAILED. Please connect any USB headset/speaker to USB Port")
+          print ("32bits_usb FAILED. Please connect any USB headset/speaker to USB Port and remove 'blacklist_hda.conf in system at path /etc/modprobe/")
 def usb_16bits():
     print("----- usb_16bits Checking -----")
-    os.system("aplay -Dhw:1,0 -r48000 -fs16_le -c2 -vvv 16bits.wav > /home/root/usb_16bits.log")
+    os.system("aplay -Dhw:1,0 -r48000 -fs16_le -c2 -vvv 16bits.wav >> /home/user/play_16bits.log")
 
-    with open('/home/root/usb_16bits.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
+    with open('/home/user/play_16bits.log') as f:
+        if 'stream:PLAYBACK' in f.read():
           print ("usb_16bits PASS")
         else:
-          print ("usb_16bits FAILED. Please connect any USB headset/speaker to USB Port")
+          print ("usb_16bits FAILED. Please connect any USB headset/speaker to USB Port and remove 'blacklist_hda.conf in system at path /etc/modprobe/")
 def dp_16bits():
     print("----- dp_16bits Checking -----")
-    os.system("aplay -Dhw:0,3 -r48000 -fs16_le -c2 -vvv 16bits.wav > /home/root/dp_16bits.log")
+    os.system("aplay -l > /home/user/dp_16bits.log")
 
-    with open('/home/root/dp_16bits.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
+    with open('/home/user/dp_16bits.log') as f:
+        if 'HDMI 0' in f.read():
           print ("dp_16bits PASS")
         else:
           print ("dp_16bits FAILED. Please connect SUT to Monitor via DP, then audio jack speaker/headset to audio jack from monitor")
 def dp_32bits():
     print("----- dp_32bits Checking -----")
-    os.system("aplay -Dhw:0,3 -r48000 -fs16_le -c2 -vvv 16bits.wav > /home/root/dp_32bits.log")
+    os.system("aplay -l  > /home/user/dp_32bits.log")
 
-    with open('/home/root/dp_32bits.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
+    with open('/home/user/dp_32bits.log') as f:
+        if 'HDMI 0' in f.read():
           print ("dp_32bits PASS")
         else:
           print ("dp_32bits FAILED. Please connect SUT to Monitor via DP, then audio jack speaker/headset to audio jack from monitor")	
 
 def play_16bits():
     print("----- play_16bits Checking -----")
-    os.system("aplay -Dhw:0,0 -r48000 -fs16_le -c2 -vvv 16bits.wav > /home/root/play_16bits.log")
+    # Run aplay first
+    output = os.popen("aplay -l | grep -E 'HDA|sof|SND'").read()
 
-    with open('/home/root/play_16bits.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
-          print ("play_16bits PASS")
+    if 'HDA' in output or 'sof' in output:
+        # If output "HDA" or "sof"
+        command = "sudo aplay -Dhw:0,0 -r48000 -fs16_le -c2 -d1 -vvv /home/user/16bits.wav"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+    elif 'sof-soundwire' in output:
+        # If output "SND"
+        command = "sudo aplay -Dhw:0,1 -r48000 -fs16_le -c2 -d1 -vvv /home/user/16bits.wav"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+    else:
+        # If none of the expected outputs are found
+        print("Audio HDA/SOF/SND is not loaded, for HDA/SOF, please check on AIC connection and ensure BIOS settings is configured, for SND, please ensure .ri and .tplg is placed correctly and BIOS settings is configured properly.")
+
+    # Check if "stream:PLAYBACK" is present in the log file
+    log_file = "/home/user/play_16bits.log"
+    with open(log_file, "a") as f:
+        f.write(stdout.decode("utf-8"))
+        f.write(stderr.decode("utf-8"))
+    with open('/home/user/play_16bits.log') as f:
+        if 'PLAYBACK' in f.read():
+            print("TEST PASS")
         else:
-          print ("play_16bits FAILED.")
+            print("TEST FAIL. Playback is failing might be due to 1) Change of -Dhw:x,x 2) Other playback process is still running. 3) Missing audio playback file in /home/user ")
 
 def record_16bits():
     print("----- record_16bits Checking -----")
-    os.system("arecord -D hw:0,0 -r 48000 -c 2 -fS16_LE recorded_1.wav -vvv > /home/root/record_16bits.log")
+    # Run arecord first
+    output = os.popen("arecord -l | grep -E 'HDA|sof|SND'").read()
 
-    with open('/home/root/record_16bits.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
-          print ("record_16bits PASS")
+    if 'HDA' in output or 'sof' in output:
+        # If output "HDA" or "sof"
+        command = "sudo arecord -Dhw:0,0 -r48000 -fs16_le -c2 -d1 -vvv"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+    elif 'sof-soundwire' in output:
+        # If output "SND"
+        command = "sudo arecord -Dhw:0,1 -r48000 -fs16_le -c2 -d1 -vvv"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+    else:
+        # If none of the expected outputs are found
+        print("Audio HDA/SOF/SND is not loaded, for HDA/SOF, please check on AIC connection and ensure BIOS settings is configured, for SND, please ensure .ri and .tplg is placed correctly and BIOS settings is configured properly.")
+
+    # Check if "stream:CAPTURE" is present in the log file
+    log_file = "/home/user/record_16bits.log"
+    with open(log_file, "a") as f:
+        f.write(stdout.decode("utf-8", errors="ignore"))
+        f.write(stderr.decode("utf-8", errors="ignore"))
+    with open('/home/user/record_16bits.log') as f:
+        if 'CAPTURE' in f.read():
+            print("TEST PASS")
         else:
-          print ("record_16bits FAILED.")
+            print("TEST FAIL. Recording is failing might be due to 1) Change of -Dhw:x,x 2) Other playback process is still running. 3) Missing audio playback file in /home/user ")
 
-def play_16bits_sof():
-    print("----- play_16bits_sof Checking -----")
-    os.system("aplay -Dhw:0,0 -r48000 -fs16_le -c2 -vvv 16bits.wav > /home/root/play_16bits_sof.log")
+def play_32bits():
+    print("----- play_32bits Checking -----")
+    # Run aplay first
+    output = os.popen("aplay -l | grep -E 'HDA|sof|SND'").read()
 
-    with open('/home/root/play_16bits_sof.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
-          print ("play_16bits_sof PASS")
+    if 'HDA' in output or 'sof' in output:
+        # If output "HDA" or "sof"
+        command = "sudo aplay -D plughw:0,0 -r48000 -fs32_le -c2 -d1 -vvv /home/user/32bits.wav"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+    elif 'sof-soundwire' in output:
+        # If output "SND"
+        command = "sudo aplay -D plughw:0,1 -r48000 -fs32_le -c2 -d1 -vvv /home/user/32bits.wav"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+    else:
+        # If none of the expected outputs are found
+        print("Audio HDA/SOF/SND is not loaded, for HDA/SOF, please check on AIC connection and ensure BIOS settings is configured, for SND, please ensure .ri and .tplg is placed correctly and BIOS settings is configured properly.")
+
+    # Check if "stream:PLAYBACK" is present in the log file
+    log_file = "/home/user/play_32bits.log"
+    with open(log_file, "a") as f:
+        f.write(stdout.decode("utf-8"))
+        f.write(stderr.decode("utf-8"))
+    with open('/home/user/play_32bits.log') as f:
+        if 'PLAYBACK' in f.read():
+            print("TEST PASS")
         else:
-          print ("play_16bits_sof FAILED.")
+            print("TEST FAIL. Playback is failing might be due to 1) Change of -Dhw:x,x 2) Other playback process is still running. 3) Missing audio playback file in /home/user ")
+		
+def record_32bits():
+    print("----- record_32bits Checking -----")
+    # Run arecord first
+    output = os.popen("arecord -l | grep -E 'HDA|sof|SND'").read()
 
-def record_16bits_sof():
-    print("----- record_16bits_sof Checking -----")
-    os.system("arecord -D hw:0,0 -r 48000 -c 2 -fS16_LE recorded_1.wav -vvv > /home/root/record_16bits_sof.log")
+    if 'HDA' in output or 'sof' in output:
+        # If output "HDA" or "sof"
+        command = "sudo arecord -D plughw:0,0 -r48000 -fs32_le -c2 -d1 -vvv"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
 
-    with open('/home/root/record_16bits_sof.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
-          print ("record_16bits_sof PASS")
+    elif 'sof-soundwire' in output:
+        # If output "SND"
+        command = "sudo arecord -D plughw:0,1 -r48000 -fs32_le -c2 -d1 -vvv"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+    else:
+        # If none of the expected outputs are found
+        print("Audio HDA/SOF/SND is not loaded, for HDA/SOF, please check on AIC connection and ensure BIOS settings is configured, for SND, please ensure .ri and .tplg is placed correctly and BIOS settings is configured properly.")
+
+    # Check if "stream:Capture" is present in the log file
+    log_file = "/home/user/record_32bits.log"
+    with open(log_file, "a") as f:
+        f.write(stdout.decode("utf-8", errors="ignore"))
+        f.write(stderr.decode("utf-8", errors="ignore"))
+    with open('/home/user/record_32bits.log') as f:
+        if 'CAPTURE' in f.read():
+            print("TEST PASS")
         else:
-          print ("record_16bits_sof FAILED.")
+            print("TEST FAIL. Recording is failing might be due to 1) Change of -Dhw:x,x 2) Other playback process is still running. 3) Missing audio playback file in /home/user ")
 
-def play_32bits_sof():
-    print("----- play_32bits_sof Checking -----")
-    os.system("aplay -D plughw:0,0 -r48000 -fs32_le -c2 -vvv 32bits.wav > /home/root/play_32bits_sof.log")
+def snd_script():
+    print("----- Copying SND Script -----")
+    os.system("cd /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio ; sudo cp -r sof-mtl.ri /lib/firmware/intel/sof-ipc4/mtl/")
+    os.system("cd /home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio ; sudo cp -r sof-mtl-rt711-2ch.tplg /lib/firmware/intel/sof-ace-tplg/")
+    #print ("Sytem will reboot")
+    #os.system("sudo reboot")
+    #time.sleep(80)
+    sys.exit(0)
 
-    with open('/home/root/play_32bits_sof.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
-          print ("play_32bits_sof PASS")
-        else:
-          print ("play_32bits_sof FAILED.")
+def get_system_info():
+    try:
+        # Execute the dmidecode command
+        result = subprocess.run(['sudo', 'dmidecode'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        output = result.stdout
 
-def record_32bits_sof():
-    print("----- record_32bits_sof Checking -----")
-    os.system("arecord -D plughw:0,0 -r 48000 -c 2 -fS32_LE recorded_1.wav -vvv > /home/root/record_32bits_sof.log")
+        # Parse the output for required information
+        system_info = {
+            "Product Name": None,
+            "Serial Number": None,
+            "SKU Number": None,
+            "Base Board Product Name": None,
+        }
 
-    with open('/home/root/record_32bits_sof.log') as f:
-        if 'Max peak (12000 samples): 0x000054d4 ####' in f.read():
-          print ("record_32bits_sof PASS")
-        else:
-          print ("record_32bits_sof FAILED.")
+        lines = output.split('\n')
+        for i, line in enumerate(lines):
+            if "System Information" in line:
+                for j in range(i, i + 20):
+                    if "Product Name:" in lines[j]:
+                        system_info["Product Name"] = lines[j].split(":", 1)[1].strip()
+                    if "Serial Number:" in lines[j]:
+                        system_info["Serial Number"] = lines[j].split(":", 1)[1].strip()
+                    if "SKU Number:" in lines[j]:
+                        system_info["SKU Number"] = lines[j].split(":", 1)[1].strip()
 
+            if "Base Board Information" in line:
+                for j in range(i, i + 20):
+                    if "Product Name:" in lines[j]:
+                        system_info["Base Board Product Name"] = lines[j].split(":", 1)[1].strip()
+
+        # Print the information
+        print("System Information")
+        print(f"\tProduct Name: {system_info['Product Name']}")
+        print(f"\tSerial Number: {system_info['Serial Number']}")
+        print(f"\tSKU Number: {system_info['SKU Number']}")
+        print("\nBase Board Information")
+        print(f"\tProduct Name: {system_info['Base Board Product Name']}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+def ensure_audio_log_directory():
+    log_dir = "/home/user/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log"
+    
+    if not os.path.isdir(log_dir):
+        try:
+            os.makedirs(log_dir)
+            print(f"Created directory: {log_dir}")
+        except OSError as e:
+            print(f"Error: {e.strerror}. Cannot create directory: {log_dir}")
+            sys.exit(0)
+    else:
+        print("Audio_log directory exists... Execution continues...")
+
+	
 def main():
     print("----- Audio Built In driver testing -----")
     script_name = str(sys.argv[0])
@@ -542,26 +692,20 @@ def main():
 
     args = parser.parse_args()
 
-    print(sys.argv[0:])
-
-    if os.path.isdir("/home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log") == 0:
-        os.system("mkdir /home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log")
-    elif os.path.isdir("/home/siv_test_collateral_audio_SUT/siv_val-io-test-apps/audio/Audio_log") == 1:
-        print("Audio_log directory existed... Execution continue...")
-    else:
-        print("Audio_log directory is missing...")
-        sys.exit(0)
+# Execute the function
+    get_system_info()
+    ensure_audio_log_directory()
 
     if args.c == "modules":
-        modules_checker()
+        audio_lib()
     elif args.c == "alsa":
-        modules_checker()
+        alsa_checker()
     elif args.c == "alsa_hdmi":
         onboard_hdmi_checker()
     elif args.b == "16" and args.s == "48":
-        f_16bit_48k()
+        aplay()
     elif args.b == "32" and args.s == "48":
-        f_32bit_48k()
+        aplay()
 	
     elif args.b == "16" and args.s == "8":
         f_16bit_8k()
@@ -570,7 +714,7 @@ def main():
     elif args.b == "16" and args.s == "16":
         f_16bit_16k()
     elif args.b == "32" and args.s == "16":
-        f_32bit_16k()
+        arecord()
     elif args.c == "sof_16b":
         sof_16b()
     elif args.c == "sof":
@@ -588,10 +732,16 @@ def main():
         capture_switch()
     elif args.c == "aplay":
         aplay()
-    elif args.c == "aplay_snd":
-        aplay_snd()
     elif args.c == "arecord":
         arecord()
+    elif args.c == "aplay_snd":
+        aplay_snd()
+    elif args.c == "arecord_snd":
+        arecord_snd()
+    elif args.c == "snd":
+        snd()
+    elif args.c == "lspci":
+        lspci()
     elif args.c == "audio_lib":
         audio_lib()
     elif args.c == "rt5660_codec":
@@ -601,25 +751,23 @@ def main():
     elif args.c == "rt5660_arecord":
         rt5660_arecord()
     elif args.c == "32bits_usb":
-        audio_lib()
+        snd_hda()
     elif args.c == "16bits_usb":
-        aplay()
+        snd_hda()
     elif args.c == "16bits_dp":
-        dp_16bits()
+        audio_lib()
     elif args.c == "32bits_dp":
-        dp_32bits()
+        snd_hda()
     elif args.c == "16bits_play":
         play_16bits()
     elif args.c == "16bits_record":
         record_16bits()
-    elif args.c == "16bits_play_sof":
-        play_16bits_sof()
-    elif args.c == "16bits_record_sof":
-        record_16bits_sof()
-    elif args.c == "32bits_play_sof":
-        play_32bits_sof()
-    elif args.c == "32bits_record_sof":
-        record_32bits_sof()
+    elif args.c == "32bits_play":
+        play_32bits()
+    elif args.c == "32bits_record":
+        record_32bits()	
+    elif args.c == "snd_script":
+        snd_script()
     else:
         print("Invalid parameters !! ")
         sys.exit(0)

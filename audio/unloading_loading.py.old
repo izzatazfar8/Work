@@ -1,0 +1,107 @@
+# Unloading/loading ALSA or Module
+# 
+# Author: Athirah Basir
+# Created: 12 DEC 2019
+
+
+import os
+import argparse
+import sys
+
+def alsa_filter():
+    print "----- ALSA Checking: -----"
+   
+    with open("/home/siv_test_collateral/siv_val-io-test-apps/audio/sut_check_alsa.log", "r") as fil:
+        data = fil.readlines()
+
+        for line in data:
+            words = line.split()
+            #print words[0]
+            with open("/home/siv_test_collateral/siv_val-io-test-apps/audio/f_sut_check_alsa.log", "a") as fil2:
+                fil2.write(words[0])
+                fil2.write("\n")
+
+#1.2 function for check module
+def alsa_checker():
+	os.system("rm -rf /home/siv_test_collateral/siv_val-io-test-apps/audio/sut_check_alsa.log; rm -rf /home/siv_test_collateral/siv_val-io-test-apps/audio/f_sut_check_alsa.log")
+	print "----- KMB ALSA  -----"
+	
+	if (os.path.isfile("/home/siv_test_collateral/siv_val-io-test-apps/audio/check_alsa.log")==0):
+		print "Check Alsa file is missing !!! Exiting ..."
+		sys.exit(0)
+	
+	os.system("dmesg | grep -i sound > /home/siv_test_collateral/siv_val-io-test-apps/audio/sut_check_alsa.log")
+	alsa_filter()
+	os.system("grep -Ff /home/siv_test_collateral/siv_val-io-test-apps/audio/f_sut_check_alsa.log /home/siv_test_collateral/siv_val-io-test-apps/audio/check_alsa.log > /home/siv_test_collateral/siv_val-io-test-apps/audio/alsa_compare.log") 
+	os.system("diff /home/siv_test_collateral/siv_val-io-test-apps/audio/alsa_compare.log /home/siv_test_collateral/siv_val-io-test-apps/audio/check_alsa.log > /home/siv_test_collateral/siv_val-io-test-apps/audio/alsa_compare1.log") 
+	if (os.stat("/home/siv_test_collateral/siv_val-io-test-apps/audio/alsa_compare1.log").st_size == 0):
+		alsa_check = 1
+		print "\n"
+		print "Alsa checker : PASS \n"
+	else:
+		alsa_check = 0
+		print "\n"
+		print "Alsa checker : FAIL \n"
+
+def modules_filter():
+    print "-----Module Built-In: -----"
+   
+    with open("/home/siv_test_collateral/siv_val-io-test-apps/audio/sut_check_modules.log", "r") as fil:
+        data = fil.readlines()
+
+        for line in data:
+            words = line.split()
+            #print words[0]
+            with open("/home/siv_test_collateral/siv_val-io-test-apps/audio/f_sut_check_modules.log", "a") as fil2:
+                fil2.write(words[0])
+                fil2.write("\n")
+
+def modules_checker():
+    uname = os.popen('uname -r').read()
+    uname = uname[:-1]
+    os.system("rm -rf /home/siv_test_collateral/siv_val-io-test-apps/audio/sut_check_modules.log; rm -rf /home/siv_test_collateral/siv_val-io-test-apps/audio/f_sut_check_modules.log")
+    print "----- Modules Checking -----"
+    if (os.path.isfile("/home/siv_test_collateral/siv_val-io-test-apps/audio/check_module.log")==0):
+		print "Check Module file is missing !!! Exiting ..."
+		sys.exit(0)
+    os.system("cat /lib/modules/"+uname+"/modules.builtin | grep -i sound > /home/siv_test_collateral/siv_val-io-test-apps/audio/sut_check_modules.log")
+    modules_filter()
+    os.system("grep -Ff /home/siv_test_collateral/siv_val-io-test-apps/audio/f_sut_check_modules.log /home/siv_test_collateral/siv_val-io-test-apps/audio/check_module.log > /home/siv_test_collateral/siv_val-io-test-apps/audio/modules_compare.log")
+    os.system("diff /home/siv_test_collateral/siv_val-io-test-apps/audio/modules_compare.log /home/siv_test_collateral/siv_val-io-test-apps/audio/check_module.log > /home/siv_test_collateral/siv_val-io-test-apps/audio/modules_compare1.log")
+    if (os.stat("/home/siv_test_collateral/siv_val-io-test-apps/audio/modules_compare1.log").st_size == 0):
+        mod_check = 1
+        print "\n"
+        print "Module checker : PASS \n"
+    else:
+        mod_check = 0
+        print "\n"
+        print "Module checker : FAIL \n"
+
+def main():
+    print "----- Unloading/loading testing -----"
+    script_name = str(sys.argv[0])
+    usage="python unloading/loading.py -c modules / ALSA"
+
+    parser = argparse.ArgumentParser(prog = script_name,
+                                 formatter_class=argparse.RawTextHelpFormatter,
+                                 description = usage)
+
+    parser.add_argument('-c', metavar='--checker', help='modules or ALSA')
+
+    args = parser.parse_args()
+
+    print sys.argv[0:]
+
+    if args.c is None:
+        print "Insufficient parameters !! "
+        sys.exit(0)
+    elif args.c == "modules":
+        modules_checker()
+    elif args.c == "ALSA":
+        alsa_checker()
+    else:
+        print "Invalid parameters !! "
+        sys.exit(0)
+
+main();
+

@@ -1,0 +1,14 @@
+kernel/sound/soundcore.ko
+kernel/sound/core/snd.ko
+kernel/sound/core/snd-timer.ko
+kernel/sound/core/snd-pcm.ko
+kernel/sound/core/snd-rawmidi.ko
+kernel/sound/soc/snd-soc-core.ko
+kernel/sound/soc/codecs/snd-soc-tlv320aic32x4.ko
+kernel/sound/soc/codecs/snd-soc-tlv320aic32x4-i2c.ko
+kernel/sound/soc/generic/snd-soc-simple-card-utils.ko
+kernel/sound/soc/generic/snd-soc-simple-card.ko
+kernel/sound/soc/intel/boards/snd-soc-keembay.ko
+kernel/sound/soc/intel/boards/snd-soc-keembay_tlv3204.ko
+kernel/sound/soc/intel/boards/snd-soc-keembay_mic_array.ko
+kernel/sound/soc/intel/keembay/snd-soc-kmb_platform.ko
